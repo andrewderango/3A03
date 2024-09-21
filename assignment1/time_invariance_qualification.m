@@ -1,3 +1,4 @@
+% Reset
 clear;
 clc;
 close all;
@@ -12,7 +13,7 @@ n_max = 100;
 n_min = -100;
 x_max = 100;
 x_min = -100;
-verbose = 2;
+verbose = 1;
 
 for i = 1:iterations
     if verbose == 2
