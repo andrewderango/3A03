@@ -28,7 +28,7 @@ end
 
 n = 0:10;
 
-for i= 1:11
+for i= 1:5
 
     impulse_step_zeros = zeros(1, i-1);
 
@@ -39,7 +39,7 @@ for i= 1:11
     impulse_step = [impulse_step_zeros, impulse_step_values];
 
     %get the output to see if future values determine current output
-    y1 = system1(n, impulse_step);
+    y1 = system3(n, impulse_step);
 
     %Creates a row vector of all zeros
     zero_vector = zeros(1, arr_len);
@@ -48,7 +48,16 @@ for i= 1:11
     zero_vector(i) = 1;
 
     %Gets the impulse response
-    y2 = system1(n, zero_vector);
+    y2 = system3(n, zero_vector);
+
+    figure;
+    stem(n, y1,'b', 'filled');
+    hold on;
+    stem(n, y2, 'r', 'filled');
+    xlabel('Time Index n');
+    ylabel('Output Signal y[n]');
+    title('Output of system1');
+    grid on;
 
     %Compares the two values if they are not equal the system is non-causal
     if y1(i) ~= y2(i)
@@ -59,12 +68,7 @@ for i= 1:11
 
 end
 
-%{
-figure;
-stem(n, y, 'filled');
-xlabel('Time Index n');
-ylabel('Output Signal y[n]');
-title('Output of system1');
-grid on;
 
-%}
+
+
+
