@@ -93,7 +93,7 @@ function result = testTimeVariance(system)
 
         % perform time shifts on n, compare new outputs to y_baseline
         for j = 1:increment_qty
-            n = n_primary_index+j : n_primary_index+signal_length+j-1; % perform time shift of n
+            n = n_primary_index+j*increment_delta : n_primary_index+signal_length+j*increment_delta-1; % perform time shift of n
             y = system(n, x); % find new output given time shifted n
             if verbose == 2
                 fprintf('n_inc%d = [%s]\n', j, num2str(n));
