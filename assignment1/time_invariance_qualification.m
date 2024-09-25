@@ -7,14 +7,44 @@ close all;
 system = @system2; % handle for the system to be tested
 iterations = 10; % how many different x and initial n vectors will be generated to test their outputs against time-shifts
 signal_length = 10; % the length of the test input signals
-increment_delta = 1; % how much the increments are increased by when time-shifts are done on the n vector
-increment_qty = 3; % how many times the n vector is time shifted per iteration
+increment_delta = 15; % how much the increments are increased by when time-shifts are done on the n vector
+increment_qty = 2; % how many times the n vector is time shifted per iteration
 n_max = 100; % the upper bound in n vector randomization 
 n_min = -100; % the lower bound in n vector randomization
 x_max = 100; % the upper bound in x vector randomization 
 x_min = -100; % the lower bound in x vector randomization
 show_plots = true; % boolean of whether to show the plots
 verbose = 2; % the level of verbose (2 = high verbosity, 0 = low verbosity; only print conclusion)
+
+% function to plot a time-variant iteration
+function plotTimeVariantIteration(all_n, all_y, increment_qty)
+    figure;
+    hold on;
+    plot(all_n{1}, all_y{1}, '-o', 'DisplayName', 'Baseline (No Shift)');
+    for k = 1:increment_qty
+        plot(all_n{k + 1}, all_y{k + 1}, '-o', 'DisplayName', ['Shift ', num2str(k)]);
+    end
+    title('Time-Variant Iteration');
+    xlabel('n');
+    ylabel('System Output y');
+    legend('show');
+    hold off;
+end
+
+% function to plot a time-invariant iteration
+function plotTimeInvariantIteration(all_n, all_y, increment_qty)
+    figure;
+    hold on;
+    plot(all_n{1}, all_y{1}, '-o', 'DisplayName', 'Baseline (No Shift)');
+    for k = 1:increment_qty
+        plot(all_n{k + 1}, all_y{k + 1}, '-o', 'DisplayName', ['Shift ', num2str(k)]);
+    end
+    title('Time-Invariant Iteration');
+    xlabel('n');
+    ylabel('System Output y');
+    legend('show');
+    hold off;
+end
 
 for i = 1:iterations
 
@@ -37,13 +67,10 @@ for i = 1:iterations
     end
     
     % store the values for plotting at the end
-    all_n = cell(increment_qty + 1, 1);
-    all_y = cell(increment_qty + 1, 1);
+    all_n = cell(increment_qty+1, 1);
+    all_y = cell(increment_qty+1, 1);
     all_n{1} = n; % n vector for baseline
     all_y{1} = y_baseline; % y vector for baseline
-
-    disp(all_n);
-    disp(all_y);
 
     % perform time shifts on n, compare new outputs to y_baseline
     for j = 1:increment_qty
@@ -73,37 +100,7 @@ end
 % if the return line was not run, then all the time shifts rendered the same output y vectors
 fprintf('\nThe system is time-invariant.\n')
 
-if show_plots
 % plot the first iteration where the system is time-invariant
+if show_plots
     plotTimeInvariantIteration(all_n, all_y, increment_qty);
-end
-
-% helper function to plot time-variant iteration
-function plotTimeVariantIteration(all_n, all_y, increment_qty)
-    figure;
-    hold on;
-    plot(all_n{1}, all_y{1}, 'b-o', 'DisplayName', 'Baseline (No Shift)');
-    for k = 1:increment_qty
-        plot(all_n{k + 1}, all_y{k + 1}, '-x', 'DisplayName', ['Shift ', num2str(k)]);
-    end
-    title('Time-Variant Iteration');
-    xlabel('n');
-    ylabel('System Output y');
-    legend('show');
-    hold off;
-end
-
-% helper function to plot time-invariant iteration
-function plotTimeInvariantIteration(all_n, all_y, increment_qty)
-    figure;
-    hold on;
-    plot(all_n{1}, all_y{1}, 'b-o', 'DisplayName', 'Baseline (No Shift)');
-    for k = 1:increment_qty
-        plot(all_n{k + 1}, all_y{k + 1}, '-x', 'DisplayName', ['Shift ', num2str(k)]);
-    end
-    title('Time-Invariant Iteration');
-    xlabel('n');
-    ylabel('System Output y');
-    legend('show');
-    hold off;
 end
