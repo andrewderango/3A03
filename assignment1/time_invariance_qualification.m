@@ -13,6 +13,7 @@ n_max = 100; % the upper bound in n vector randomization
 n_min = -100; % the lower bound in n vector randomization
 x_max = 100; % the upper bound in x vector randomization 
 x_min = -100; % the lower bound in x vector randomization
+show_plots = true; % boolean of whether to show the plots
 verbose = 2; % the level of verbose (2 = high verbosity, 0 = low verbosity; only print conclusion)
 
 for i = 1:iterations
@@ -35,11 +36,14 @@ for i = 1:iterations
         fprintf('y_inc0 = [%s]\n', num2str(y_baseline));
     end
     
-    % Store the values for plotting
+    % store the values for plotting at the end
     all_n = cell(increment_qty + 1, 1);
     all_y = cell(increment_qty + 1, 1);
     all_n{1} = n; % n vector for baseline
     all_y{1} = y_baseline; % y vector for baseline
+
+    disp(all_n);
+    disp(all_y);
 
     % perform time shifts on n, compare new outputs to y_baseline
     for j = 1:increment_qty
@@ -55,25 +59,26 @@ for i = 1:iterations
         end
         if ~isequal(y, y_baseline) % compare new output and output from initial n
             disp('The system is time-variant.')
-            % Plot the iteration where time variance is found
-            plotTimeVariantIteration(all_n, all_y, increment_qty);
+            if show_plots
+                plotTimeVariantIteration(all_n, all_y, increment_qty); % if time variant, then show the plot
+            end
             return; % have sufficient evidence for time variance
         end
     end
-    
     if ~verbose == 0
         fprintf('Iteration %d: Invariant\n', i);
     end
-    
 end
 
 % if the return line was not run, then all the time shifts rendered the same output y vectors
 fprintf('\nThe system is time-invariant.\n')
 
-% Plot the first iteration where the system is time-invariant
-plotTimeInvariantIteration(all_n, all_y, increment_qty);
+if show_plots
+% plot the first iteration where the system is time-invariant
+    plotTimeInvariantIteration(all_n, all_y, increment_qty);
+end
 
-% Helper function to plot time-variant iteration
+% helper function to plot time-variant iteration
 function plotTimeVariantIteration(all_n, all_y, increment_qty)
     figure;
     hold on;
@@ -88,7 +93,7 @@ function plotTimeVariantIteration(all_n, all_y, increment_qty)
     hold off;
 end
 
-% Helper function to plot time-invariant iteration
+% helper function to plot time-invariant iteration
 function plotTimeInvariantIteration(all_n, all_y, increment_qty)
     figure;
     hold on;
