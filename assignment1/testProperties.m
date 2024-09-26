@@ -69,7 +69,7 @@ function result = testLinearity(system, name, enablePlot)
                 stem(n,x3,'r','DisplayName','x3');
                 title('System Inputs');
                 xlabel('[n]');
-                ylabel('Amplitude');
+                ylabel('Amplitude'); 
                 legend;
                 annotation('textbox', [0.47,0.78,0.1,0.1], 'String' ,sprintf('Scaling\na = %d\nb = %d',a,b), 'HorizontalAlignment', 'center');
                 hold off;
