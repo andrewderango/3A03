@@ -1,3 +1,5 @@
+% Function to test the four properties of system printing results in terminal without a return,
+% (system to test [function], name of system [string], to plot or not [boolean])
 function testProperties(system, name, enablePlot)
     fprintf('Properties of %s:\n', name);
     
@@ -28,25 +30,95 @@ function testProperties(system, name, enablePlot)
     fprintf('\n');
 end
 
+% Function to test linearity of system returning true or false,
+% (system to test [function], name of system [string], to plot or not [boolean])
 function result = testLinearity(system, name, enablePlot)
-    result = true;
-    n = linspace(-10, 10, 21);
-    for i = 1:1000
-        x1 = rand(1,21);
-        x2 = rand(1,21);
-        a = randi([-100,100]);
-        b = randi([-100,100]);
+    % Parameters
+    iterations = 1000;  % number of tests completed with random signals and scaling factors
+    signal_length = 11; % the length of the test input signals
+    max_scaling = 100;  % max scaling factor and max amplitude of a*x1 and b*x2
+    min_scaling = -100; % min scaling factor and min amplitude of a*x1 and b*x2
+    tolerance = 1e-12;  % tolerance for allowable error when equating to account for floating point percision errors
+
+    result = true; % assume true/linear by default
+    
+    if enablePlot == true
+        figure; % create a new figure if plotting is enabled
+    end    
+    
+    n = linspace(1-signal_length/2, signal_length/2, signal_length); % define n vector to be used throughout
+    
+    for i = 1:iterations
+        x1 = rand(1,signal_length); % create random x1 input signal with values between 0 to 1
+        x2 = rand(1,signal_length); % create random x2 input signal with values between 0 to 1
+        a = randi([min_scaling, max_scaling]); % create random scaling factor a
+        b = randi([min_scaling, max_scaling]); % create random scaling factor b
         y1 = system(n,x1);
         y2 = system(n,x2);
-        x3 = a * x1 + b * x2;
+        x3 = a * x1 + b * x2; % create x3 as a linear combination of x1 and x2
         y3 = system(n,x3);
-        if sum(abs(a * y1 + b * y2 - y3)) > 1e-12
-            result = false;
+        if sum(abs(a * y1 + b * y2 - y3)) > tolerance % compare results within tolerance
+            result = false; % proved false/non-linear
+
+            % plotting non-linear case
+            if enablePlot == true
+                subplot(1,2,1);
+                stem(n,x1,'b','DisplayName','x1');
+                hold on;
+                stem(n,x2,'g','DisplayName','x2');
+                stem(n,x3,'r','DisplayName','x3');
+                title('System Inputs');
+                xlabel('[n]');
+                ylabel('Amplitude');
+                legend;
+                annotation('textbox', [0.47,0.78,0.1,0.1], 'String' ,sprintf('Scaling\na = %d\nb = %d',a,b), 'HorizontalAlignment', 'center');
+                hold off;
+                subplot(1,2,2);
+                stem(n,y1,'b','DisplayName','y1');
+                hold on;
+                stem(n,y2,'g','DisplayName','y2');
+                stem(n,y3,'r','DisplayName','y3');
+                title('System Outputs');
+                xlabel('[n]');
+                ylabel('Amplitude');
+                legend;
+                hold off;
+                sgtitle(['Input and Output for ', name, ' Proving Non-Linearity'], 'FontWeight', 'bold');
+            end
             return;
+        end
+        
+        % plotting linear case if the last three tests are reached without issues
+        if i > iterations-3 && enablePlot == true
+            c = i-iterations+3;
+            subplot(3,2,2*(c)-1);
+            stem(n,x1,'b','DisplayName','x1');
+            hold on;
+            stem(n,x2,'g','DisplayName','x2');
+            stem(n,x3,'r','DisplayName','x3');
+            title(['Case ', num2str(c), ': System Inputs']);
+            xlabel('[n]');
+            ylabel('Amplitude');
+            legend;
+            annotation('textbox', [0.47,(1.07-0.29*c),0.1,0.1], 'String' ,sprintf('Scaling\na = %d\nb = %d',a,b), 'HorizontalAlignment', 'center');
+            hold off;
+            subplot(3,2,2*(c));
+            stem(n,y1,'b','DisplayName','y1');
+            hold on;
+            stem(n,y2,'g','DisplayName','y2');
+            stem(n,y3,'r','DisplayName','y3');
+            title(['Case ', num2str(c), ': System Outputs']);
+            xlabel('[n]');
+            ylabel('Amplitude');
+            legend;
+            hold off;
+            sgtitle(['Three Cases of Inputs and Outputs for ', name, ' Proving Linearity'], 'FontWeight', 'bold');
         end
     end
 end
 
+% Function to test time variance of system returning true or false,
+% (system to test [function], name of system [string], to plot or not [boolean])
 function result = testTimeVariance(system, name, enablePlot)
     % Parameters
     iterations = 10; % how many different x and initial n vectors will be generated to test their outputs against time-shifts
@@ -97,6 +169,8 @@ function result = testTimeVariance(system, name, enablePlot)
     end
 end
 
+% Function to test causality of system returning true or false,
+% (system to test [function], name of system [string], to plot or not [boolean])
 function result = testCausality(system, name, enablePlot)
 
     result = true;
@@ -138,6 +212,8 @@ function result = testCausality(system, name, enablePlot)
 
 end
 
+% Function to test memory of system returning true or false,
+% (system to test [function], name of system [string], to plot or not [boolean])
 function result = testMemory(system, name, enablePlot)
     n = 0:10;
     arr_len = 11;
