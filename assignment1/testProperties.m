@@ -123,7 +123,7 @@ function result = testTimeVariance(system, name, enablePlot)
     % nested function to plot a time-variant iteration
     function plotTimeVariantIteration(all_n, all_x, all_y, increment_qty)
     
-        % input plots (x)
+        % generate fig
         figure;
         hold on;
         sgtitle(['Test Case Proving Time Variance for ', name], 'FontWeight', 'bold');
@@ -135,7 +135,7 @@ function result = testTimeVariance(system, name, enablePlot)
         for k = 1:increment_qty
             stem(all_n{k + 1}, all_x{k + 1}, 'DisplayName', ['x[n-', num2str(k * 15), ']'], 'LineStyle', '-');
         end
-        title(strcat(name, ' Inputs'));
+        title([name, ' Inputs']);
         xlabel('n');
         ylabel('Input Amplitude');
         legend('show');
@@ -148,7 +148,7 @@ function result = testTimeVariance(system, name, enablePlot)
         for k = 1:increment_qty
             stem(all_n{k + 1}, all_y{k + 1}, 'DisplayName', ['y[n-', num2str(k * 15), ']'], 'LineStyle', '-');
         end
-        title(strcat(name, ' Outputs'));
+        title([name, ' Outputs']);
         xlabel('n');
         ylabel('Output Amplitude');
         legend('show');
@@ -158,30 +158,34 @@ function result = testTimeVariance(system, name, enablePlot)
     % nested function to plot a time-invariant iteration
     function plotTimeInvariantIteration(all_n, all_x, all_y, increment_qty)
         
-        % input plots (x)
+        % generate fig
         figure;
+        hold on;
+        sgtitle(['Test Cases Suggesting Time Invariance for ', name], 'FontWeight', 'bold');
+        
+        % plot inputs (x)
         subplot(1,2,1);
         hold on;
         stem(all_n{1}, all_x{1}, 'DisplayName', 'x[n]', 'LineStyle', '-');
         for k = 1:increment_qty
             stem(all_n{k + 1}, all_x{k + 1}, 'DisplayName', ['x[n-', num2str(k * 15), ']'], 'LineStyle', '-');
         end
-        title('x[n] and Time Shifts');
+        title([name, ' Inputs']);
         xlabel('n');
-        ylabel('Input x');
+        ylabel('Input Amplitude');
         legend('show');
         hold off;
-
-        % output plots (y)
+    
+        % plot outputs (y)
         subplot(1,2,2);
         hold on;
         stem(all_n{1}, all_y{1}, 'DisplayName', 'y[n]', 'LineStyle', '-');
         for k = 1:increment_qty
             stem(all_n{k + 1}, all_y{k + 1}, 'DisplayName', ['y[n-', num2str(k * 15), ']'], 'LineStyle', '-');
         end
-        title('y[n] and Time Shifts');
+        title([name, ' Outputs']);
         xlabel('n');
-        ylabel('System Output y');
+        ylabel('Output Amplitude');
         legend('show');
         hold off;
     end
