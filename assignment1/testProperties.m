@@ -121,7 +121,7 @@ end
 function result = testTimeVariance(system, name, enablePlot)
 
     % nested function to plot a time-variant iteration
-    function plotTimeVariantIteration(all_n, all_x, all_y, increment_qty, increment_delta)
+    function plotTimeVariantIteration(name, all_n, all_x, all_y, increment_qty, increment_delta)
     
         % generate fig
         figure;
@@ -156,7 +156,7 @@ function result = testTimeVariance(system, name, enablePlot)
     end
 
     % nested function to plot a time-invariant iteration
-    function plotTimeInvariantIteration(invariant_cases_n, invariant_cases_x, invariant_cases_y, increment_qty, increment_delta)
+    function plotTimeInvariantIteration(name, invariant_cases_n, invariant_cases_x, invariant_cases_y, increment_qty, increment_delta)
         
         % generate fig
         figure;
@@ -255,7 +255,7 @@ function result = testTimeVariance(system, name, enablePlot)
             if ~isequal(y_shifted, y_baseline) % compare new output and output from initial n
                 result = true;
                 if enablePlot
-                    plotTimeVariantIteration(all_n, all_x, all_y, increment_qty, increment_delta); % if time variant, then show the plot
+                    plotTimeVariantIteration(name, all_n, all_x, all_y, increment_qty, increment_delta); % if time variant, then show the plot
                 end
                 return; % have sufficient evidence for time variance
             end
@@ -277,7 +277,7 @@ function result = testTimeVariance(system, name, enablePlot)
     
     % plot the first iteration where the system is time-invariant
     if enablePlot
-        plotTimeInvariantIteration(invariant_cases_n, invariant_cases_x, invariant_cases_y, increment_qty, increment_delta);
+        plotTimeInvariantIteration(name, invariant_cases_n, invariant_cases_x, invariant_cases_y, increment_qty, increment_delta);
     end
 end
 
