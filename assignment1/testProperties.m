@@ -67,8 +67,8 @@ function result = testLinearity(system, name, enablePlot)
                 hold on;
                 stem(n,x2,'g','DisplayName','x2');
                 stem(n,x3,'r','DisplayName','x3');
-                title('System Inputs');
-                xlabel('[n]');
+                title([name, ' Inputs']);
+                xlabel('n');
                 ylabel('Input Amplitude'); 
                 legend;
                 annotation('textbox', [0.47,0.78,0.1,0.1], 'String' ,sprintf('Scaling\na = %d\nb = %d',a,b), 'HorizontalAlignment', 'center');
@@ -79,12 +79,12 @@ function result = testLinearity(system, name, enablePlot)
                 stem(n,y2,'g','DisplayName','y2');
                 stem(n,y3,'r','DisplayName','y3');
                 stem(n,a*y1+b*y2,'p','DisplayName','a*y1+b*y2');
-                title('System Outputs');
-                xlabel('[n]');
+                title([name, ' Outputs']);
+                xlabel('n');
                 ylabel('Output Amplitude');
                 legend;
                 hold off;
-                sgtitle(['Input and Output for ', name, ' Proving Non-Linearity'], 'FontWeight', 'bold');
+                sgtitle(['Test Case Proving Non-Linearity for ', name], 'FontWeight', 'bold');
             end
             return;
         end
@@ -97,8 +97,8 @@ function result = testLinearity(system, name, enablePlot)
             hold on;
             stem(n,x2,'g','DisplayName','x2');
             stem(n,x3,'r','DisplayName','x3');
-            title(['Case ', num2str(c), ': System Inputs']);
-            xlabel('[n]');
+            title([name, ' Inputs (Test Case ', num2str(c), ')']);
+            xlabel('n');
             ylabel('Input Amplitude');
             legend;
             annotation('textbox', [0.47,(1.07-0.29*c),0.1,0.1], 'String' ,sprintf('Scaling\na = %d\nb = %d',a,b), 'HorizontalAlignment', 'center');
@@ -109,12 +109,12 @@ function result = testLinearity(system, name, enablePlot)
             stem(n,y2,'g','DisplayName','y2');
             stem(n,y3,'r','DisplayName','y3');
             stem(n,a*y1+b*y2,'p','DisplayName','a*y1+b*y2');
-            title(['Case ', num2str(c), ': System Outputs']);
-            xlabel('[n]');
+            title([name, ' Outputs (Test Case ', num2str(c), ')']);
+            xlabel('n');
             ylabel('Output Amplitude');
             legend;
             hold off;
-            sgtitle(['Three Cases of Inputs and Outputs for ', name, ' Suggesting Linearity'], 'FontWeight', 'bold');
+            sgtitle(['Test Cases Suggesting Linearity for ', name], 'FontWeight', 'bold');
         end
     end
 end
