@@ -69,7 +69,7 @@ function result = testLinearity(system, name, enablePlot)
                 stem(n,x3,'r','DisplayName','x3');
                 title('System Inputs');
                 xlabel('[n]');
-                ylabel('Amplitude'); 
+                ylabel('Input Amplitude'); 
                 legend;
                 annotation('textbox', [0.47,0.78,0.1,0.1], 'String' ,sprintf('Scaling\na = %d\nb = %d',a,b), 'HorizontalAlignment', 'center');
                 hold off;
@@ -78,9 +78,10 @@ function result = testLinearity(system, name, enablePlot)
                 hold on;
                 stem(n,y2,'g','DisplayName','y2');
                 stem(n,y3,'r','DisplayName','y3');
+                stem(n,a*y1+b*y2,'p','DisplayName','a*y1+b*y2');
                 title('System Outputs');
                 xlabel('[n]');
-                ylabel('Amplitude');
+                ylabel('Output Amplitude');
                 legend;
                 hold off;
                 sgtitle(['Input and Output for ', name, ' Proving Non-Linearity'], 'FontWeight', 'bold');
@@ -98,7 +99,7 @@ function result = testLinearity(system, name, enablePlot)
             stem(n,x3,'r','DisplayName','x3');
             title(['Case ', num2str(c), ': System Inputs']);
             xlabel('[n]');
-            ylabel('Amplitude');
+            ylabel('Input Amplitude');
             legend;
             annotation('textbox', [0.47,(1.07-0.29*c),0.1,0.1], 'String' ,sprintf('Scaling\na = %d\nb = %d',a,b), 'HorizontalAlignment', 'center');
             hold off;
@@ -107,9 +108,10 @@ function result = testLinearity(system, name, enablePlot)
             hold on;
             stem(n,y2,'g','DisplayName','y2');
             stem(n,y3,'r','DisplayName','y3');
+            stem(n,a*y1+b*y2,'p','DisplayName','a*y1+b*y2');
             title(['Case ', num2str(c), ': System Outputs']);
             xlabel('[n]');
-            ylabel('Amplitude');
+            ylabel('Output Amplitude');
             legend;
             hold off;
             sgtitle(['Three Cases of Inputs and Outputs for ', name, ' Suggesting Linearity'], 'FontWeight', 'bold');
