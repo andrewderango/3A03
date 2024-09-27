@@ -112,60 +112,172 @@ function result = testLinearity(system, name, enablePlot)
             ylabel('Amplitude');
             legend;
             hold off;
-            sgtitle(['Three Cases of Inputs and Outputs for ', name, ' Proving Linearity'], 'FontWeight', 'bold');
+            sgtitle(['Three Cases of Inputs and Outputs for ', name, ' Suggesting Linearity'], 'FontWeight', 'bold');
         end
     end
 end
 
-% Function to test time variance of system returning true or false,
-% (system to test [function], name of system [string], to plot or not [boolean])
+% function to test time variance of system, returning true or false
 function result = testTimeVariance(system, name, enablePlot)
-    % Parameters
+
+    % nested function to plot a time-variant iteration
+    function plotTimeVariantIteration(name, all_n, all_x, all_y, increment_qty, increment_delta)
+    
+        % generate fig
+        figure;
+        hold on;
+        sgtitle(['Test Case Proving Time Variance for ', name], 'FontWeight', 'bold');
+        
+        % plot inputs (x)
+        subplot(1,2,1);
+        hold on;
+        stem(all_n{1}, all_x{1}, 'DisplayName', 'x[n]', 'LineStyle', '-');
+        for k = 1:increment_qty
+            stem(all_n{k + 1}, all_x{k + 1}, 'DisplayName', ['x[n-', num2str(k * increment_delta), ']'], 'LineStyle', '-'); % plot the time shifts
+        end
+        title([name, ' Inputs']);
+        xlabel('n');
+        ylabel('Input Amplitude');
+        legend('show');
+        hold off;
+    
+        % plot outputs (y)
+        subplot(1,2,2);
+        hold on;
+        stem(all_n{1}, all_y{1}, 'DisplayName', 'y[n]', 'LineStyle', '-');
+        for k = 1:increment_qty
+            stem(all_n{k + 1}, all_y{k + 1}, 'DisplayName', ['y[n-', num2str(k * increment_delta), ']'], 'LineStyle', '-'); % plot the time shifts
+        end
+        title([name, ' Outputs']);
+        xlabel('n');
+        ylabel('Output Amplitude');
+        legend('show');
+        hold off;
+    end
+
+    % nested function to plot a time-invariant iteration
+    function plotTimeInvariantIteration(name, invariant_cases_n, invariant_cases_x, invariant_cases_y, increment_qty, increment_delta)
+        
+        % generate fig
+        figure;
+        hold on;
+        sgtitle(['Test Cases Suggesting Time Invariance for ', name], 'FontWeight', 'bold');
+        
+        for k = 1:3
+
+            % plot inputs (x)
+            subplot(3, 2, (k-1) * 2 + 1);
+            hold on;
+            stem(invariant_cases_n{k}{1}, invariant_cases_x{k}{1}, 'DisplayName', 'x[n]', 'LineStyle', '-');
+            for l = 2:increment_qty % only print the first shifts for visual clarity
+                stem(invariant_cases_n{k}{l}, invariant_cases_x{k}{l}, 'DisplayName', ['x[n-', num2str((l-1) * increment_delta), ']'], 'LineStyle', '-');
+                title([name, ' Inputs (Test Case ', num2str(k), ')']);
+                xlabel('n');
+                ylabel('Input Amplitude');
+            end
+            legend('show');
+            hold off;
+    
+            % plot outputs (y)
+            subplot(3, 2, (k-1) * 2 + 2);
+            hold on;
+            stem(invariant_cases_n{k}{1}, invariant_cases_y{k}{1}, 'DisplayName', 'y[n]', 'LineStyle', '-');
+            for l = 2:increment_qty % only print the first shifts for visual clarity
+                stem(invariant_cases_n{k}{l}, invariant_cases_y{k}{l}, 'DisplayName', ['y[n-', num2str((l-1) * increment_delta), ']'], 'LineStyle', '-');
+                title([name, ' Outputs (Test Case ', num2str(k), ')']);
+                xlabel('n');
+                ylabel('Output Amplitude');
+            end
+            legend('show');
+            hold off;
+        end
+    end
+
+    % parameters
     iterations = 10; % how many different x and initial n vectors will be generated to test their outputs against time-shifts
     signal_length = 10; % the length of the test input signals
-    increment_delta = 1; % how much the increments are increased by when time-shifts are done on the n vector
-    increment_qty = 3; % how many times the n vector is time shifted per iteration
+    increment_delta = 15; % how much the increments are increased by when time-shifts are done on the n vector
+    increment_qty = 2; % how many times the n vector is time shifted per iteration
     n_max = 100; % the upper bound in n vector randomization 
     n_min = -100; % the lower bound in n vector randomization
     x_max = 100; % the upper bound in x vector randomization 
     x_min = -100; % the lower bound in x vector randomization
-    verbose = 0; % the level of verbose (2 = high verbosity, 0 = low verbosity; don't print anything)
+    verbose = 0; % the level of verbose (2 = high verbosity, 0 = low verbosity; only print conclusion)
+
+    % store the values for plotting, long-term storage
+    invariant_cases_n = cell(3, 1);
+    invariant_cases_x = cell(3, 1);
+    invariant_cases_y = cell(3, 1);
 
     for i = 1:iterations
-
+    
         % print the current iteration number
         if verbose == 2
             fprintf('\n-- ITERATION %d --\n', i);
         end
-
+    
         % generate the randomized sequential initial n vector, and the randomized x vector
         n_primary_index = randi([n_min, n_max - signal_length]);
-        x = x_min + (x_max - x_min) * rand(1, 10);
-        n = n_primary_index : n_primary_index+signal_length-1;
+        x = x_min + (x_max - x_min) * rand(1, signal_length);
+        n = n_primary_index : n_primary_index + signal_length - 1;
         y_baseline = system(n, x); % the output of the system given x and the initial n
-
+        
         % print values
         if verbose == 2
             fprintf('x = [%s]\n', num2str(x));
             fprintf('n_inc0 = [%s]\n', num2str(n));
             fprintf('y_inc0 = [%s]\n', num2str(y_baseline));
         end
+        
+        % store the values for plotting, current iteration
+        all_n = cell(increment_qty + 1, 1);
+        all_x = cell(increment_qty + 1, 1);
+        all_y = cell(increment_qty + 1, 1);
 
+        % fill in the first elements from the baseline inputs and outputs
+        all_n{1} = n;
+        all_x{1} = x;
+        all_y{1} = y_baseline;
+    
         % perform time shifts on n, compare new outputs to y_baseline
         for j = 1:increment_qty
-            n = n_primary_index+j*increment_delta : n_primary_index+signal_length+j*increment_delta-1; % perform time shift of n
-            y = system(n, x); % find new output given time shifted n
+            n_shifted = n_primary_index + j * increment_delta : n_primary_index + signal_length + j * increment_delta - 1; % perform time shift of n
+            y_shifted = system(n_shifted, x); % find new output given time shifted n
+            
+            all_n{j + 1} = n_shifted; % store for plotting
+            all_x{j + 1} = x; % x does not change
+            all_y{j + 1} = y_shifted; % store for plotting
+    
             if verbose == 2
-                fprintf('n_inc%d = [%s]\n', j, num2str(n));
-                fprintf('y_inc%d = [%s]\n', j, num2str(y));
+                fprintf('n_inc%d = [%s]\n', j, num2str(n_shifted));
+                fprintf('y_inc%d = [%s]\n', j, num2str(y_shifted));
             end
-            if ~isequal(y, y_baseline) % compare new output and output from initial n
+            if ~isequal(y_shifted, y_baseline) % compare new output and output from initial n
                 result = true;
+                if enablePlot
+                    plotTimeVariantIteration(name, all_n, all_x, all_y, increment_qty, increment_delta); % if time variant, then show the plot
+                end
                 return; % have sufficient evidence for time variance
             end
         end
-        % if the return line was not run, then all the time shifts rendered the same output y vectors
-        result = false;
+
+        if i > iterations - 3
+            invariant_cases_n{3 - iterations + i} = all_n;
+            invariant_cases_x{3 - iterations + i} = all_x;
+            invariant_cases_y{3 - iterations + i} = all_y;
+        end
+        
+        if verbose ~= 0
+            fprintf('Iteration %d: Invariant\n', i);
+        end
+    end
+    
+    % if the return line was not run, then all the time shifts rendered the same output y vectors
+    result = false;
+    
+    % plot the first iteration where the system is time-invariant
+    if enablePlot
+        plotTimeInvariantIteration(name, invariant_cases_n, invariant_cases_x, invariant_cases_y, increment_qty, increment_delta);
     end
 end
 
