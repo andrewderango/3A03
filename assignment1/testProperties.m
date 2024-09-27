@@ -121,29 +121,65 @@ end
 function result = testTimeVariance(system, name, enablePlot)
 
     % nested function to plot a time-variant iteration
-    function plotTimeVariantIteration(all_n, all_y, increment_qty)
+    function plotTimeVariantIteration(all_n, all_x, all_y, increment_qty)
+    
+        % input plots (x)
         figure;
         hold on;
-        plot(all_n{1}, all_y{1}, '-o', 'DisplayName', 'y[n]');
+        sgtitle(['Test Case Proving Time Variance for ', name], 'FontWeight', 'bold');
+        
+        % plot inputs (x)
+        subplot(1,2,1);
+        hold on;
+        stem(all_n{1}, all_x{1}, 'DisplayName', 'x[n]', 'LineStyle', '-');
         for k = 1:increment_qty
-            plot(all_n{k + 1}, all_y{k + 1}, '-o', 'DisplayName', ['Shift ', num2str(k)]);
+            stem(all_n{k + 1}, all_x{k + 1}, 'DisplayName', ['x[n-', num2str(k * 15), ']'], 'LineStyle', '-');
         end
-        title('Time-Variant Iteration');
+        title(strcat(name, ' Inputs'));
         xlabel('n');
-        ylabel('System Output y');
+        ylabel('Input Amplitude');
+        legend('show');
+        hold off;
+    
+        % plot outputs (y)
+        subplot(1,2,2);
+        hold on;
+        stem(all_n{1}, all_y{1}, 'DisplayName', 'y[n]', 'LineStyle', '-');
+        for k = 1:increment_qty
+            stem(all_n{k + 1}, all_y{k + 1}, 'DisplayName', ['y[n-', num2str(k * 15), ']'], 'LineStyle', '-');
+        end
+        title(strcat(name, ' Outputs'));
+        xlabel('n');
+        ylabel('Output Amplitude');
         legend('show');
         hold off;
     end
 
-    % function to plot a time-invariant iteration
-    function plotTimeInvariantIteration(all_n, all_y, increment_qty)
+    % nested function to plot a time-invariant iteration
+    function plotTimeInvariantIteration(all_n, all_x, all_y, increment_qty)
+        
+        % input plots (x)
         figure;
+        subplot(1,2,1);
         hold on;
-        plot(all_n{1}, all_y{1}, '-o', 'DisplayName', 'y[n]');
+        stem(all_n{1}, all_x{1}, 'DisplayName', 'x[n]', 'LineStyle', '-');
         for k = 1:increment_qty
-            plot(all_n{k + 1}, all_y{k + 1}, '-o', 'DisplayName', ['Shift ', num2str(k)]);
+            stem(all_n{k + 1}, all_x{k + 1}, 'DisplayName', ['x[n-', num2str(k * 15), ']'], 'LineStyle', '-');
         end
-        title('Time-Invariant Iteration');
+        title('x[n] and Time Shifts');
+        xlabel('n');
+        ylabel('Input x');
+        legend('show');
+        hold off;
+
+        % output plots (y)
+        subplot(1,2,2);
+        hold on;
+        stem(all_n{1}, all_y{1}, 'DisplayName', 'y[n]', 'LineStyle', '-');
+        for k = 1:increment_qty
+            stem(all_n{k + 1}, all_y{k + 1}, 'DisplayName', ['y[n-', num2str(k * 15), ']'], 'LineStyle', '-');
+        end
+        title('y[n] and Time Shifts');
         xlabel('n');
         ylabel('System Output y');
         legend('show');
@@ -170,8 +206,8 @@ function result = testTimeVariance(system, name, enablePlot)
     
         % generate the randomized sequential initial n vector, and the randomized x vector
         n_primary_index = randi([n_min, n_max - signal_length]);
-        x = x_min + (x_max - x_min) * rand(1, 10);
-        n = n_primary_index : n_primary_index+signal_length-1;
+        x = x_min + (x_max - x_min) * rand(1, signal_length);
+        n = n_primary_index : n_primary_index + signal_length - 1;
         y_baseline = system(n, x); % the output of the system given x and the initial n
         
         % print values
@@ -182,32 +218,37 @@ function result = testTimeVariance(system, name, enablePlot)
         end
         
         % store the values for plotting at the end
-        all_n = cell(increment_qty+1, 1);
-        all_y = cell(increment_qty+1, 1);
-        all_n{1} = n; % n vector for baseline
-        all_y{1} = y_baseline; % y vector for baseline
+        all_n = cell(increment_qty + 1, 1);
+        all_x = cell(increment_qty + 1, 1);
+        all_y = cell(increment_qty + 1, 1);
+
+        % fill in the first elements from the baseline inputs and outputs
+        all_n{1} = n;
+        all_x{1} = x;
+        all_y{1} = y_baseline;
     
         % perform time shifts on n, compare new outputs to y_baseline
         for j = 1:increment_qty
-            n = n_primary_index+j*increment_delta : n_primary_index+signal_length+j*increment_delta-1; % perform time shift of n
-            y = system(n, x); % find new output given time shifted n
+            n_shifted = n_primary_index + j * increment_delta : n_primary_index + signal_length + j * increment_delta - 1; % perform time shift of n
+            y_shifted = system(n_shifted, x); % find new output given time shifted n
             
-            all_n{j + 1} = n; % store for plotting
-            all_y{j + 1} = y; % store for plotting
+            all_n{j + 1} = n_shifted; % store for plotting
+            all_x{j + 1} = x; % x does not change
+            all_y{j + 1} = y_shifted; % store for plotting
     
             if verbose == 2
-                fprintf('n_inc%d = [%s]\n', j, num2str(n));
-                fprintf('y_inc%d = [%s]\n', j, num2str(y));
+                fprintf('n_inc%d = [%s]\n', j, num2str(n_shifted));
+                fprintf('y_inc%d = [%s]\n', j, num2str(y_shifted));
             end
-            if ~isequal(y, y_baseline) % compare new output and output from initial n
+            if ~isequal(y_shifted, y_baseline) % compare new output and output from initial n
                 result = true;
                 if enablePlot
-                    plotTimeVariantIteration(all_n, all_y, increment_qty); % if time variant, then show the plot
+                    plotTimeVariantIteration(all_n, all_x, all_y, increment_qty); % if time variant, then show the plot
                 end
                 return; % have sufficient evidence for time variance
             end
         end
-        if ~verbose == 0
+        if verbose ~= 0
             fprintf('Iteration %d: Invariant\n', i);
         end
     end
@@ -217,7 +258,7 @@ function result = testTimeVariance(system, name, enablePlot)
     
     % plot the first iteration where the system is time-invariant
     if enablePlot
-        plotTimeInvariantIteration(all_n, all_y, increment_qty);
+        plotTimeInvariantIteration(all_n, all_x, all_y, increment_qty);
     end
 end
 
