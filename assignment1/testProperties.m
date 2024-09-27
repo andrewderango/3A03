@@ -112,7 +112,7 @@ function result = testLinearity(system, name, enablePlot)
             ylabel('Amplitude');
             legend;
             hold off;
-            sgtitle(['Three Cases of Inputs and Outputs for ', name, ' Proving Linearity'], 'FontWeight', 'bold');
+            sgtitle(['Three Cases of Inputs and Outputs for ', name, ' Suggesting Linearity'], 'FontWeight', 'bold');
         end
     end
 end
