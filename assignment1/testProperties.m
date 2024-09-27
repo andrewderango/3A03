@@ -120,6 +120,11 @@ end
 % function to test time variance of system, returning true or false
 function result = testTimeVariance(system, name, enablePlot)
 
+    % Store outputs for the last three invariant test cases
+    invariant_cases_n = {};
+    invariant_cases_x = {};
+    invariant_cases_y = {};
+
     % nested function to plot a time-variant iteration
     function plotTimeVariantIteration(all_n, all_x, all_y, increment_qty)
     
@@ -156,38 +161,34 @@ function result = testTimeVariance(system, name, enablePlot)
     end
 
     % nested function to plot a time-invariant iteration
-    function plotTimeInvariantIteration(all_n, all_x, all_y, increment_qty)
+    function plotTimeInvariantIteration(invariant_cases_n, invariant_cases_x, invariant_cases_y)
         
         % generate fig
         figure;
         hold on;
         sgtitle(['Test Cases Suggesting Time Invariance for ', name], 'FontWeight', 'bold');
         
-        % plot inputs (x)
-        subplot(1,2,1);
-        hold on;
-        stem(all_n{1}, all_x{1}, 'DisplayName', 'x[n]', 'LineStyle', '-');
-        for k = 1:increment_qty
-            stem(all_n{k + 1}, all_x{k + 1}, 'DisplayName', ['x[n-', num2str(k * 15), ']'], 'LineStyle', '-');
-        end
-        title([name, ' Inputs']);
-        xlabel('n');
-        ylabel('Input Amplitude');
-        legend('show');
-        hold off;
+        for k = 1:3
+            % Plot inputs (x)
+            subplot(3, 2, (k - 1) * 2 + 1);
+            hold on;
+            stem(invariant_cases_n{k}, invariant_cases_x{k}, 'DisplayName', 'x[n]', 'LineStyle', '-');
+            title([name, ' Inputs (Case ', num2str(k), ')']);
+            xlabel('n');
+            ylabel('Input Amplitude');
+            legend('show');
+            hold off;
     
-        % plot outputs (y)
-        subplot(1,2,2);
-        hold on;
-        stem(all_n{1}, all_y{1}, 'DisplayName', 'y[n]', 'LineStyle', '-');
-        for k = 1:increment_qty
-            stem(all_n{k + 1}, all_y{k + 1}, 'DisplayName', ['y[n-', num2str(k * 15), ']'], 'LineStyle', '-');
+            % Plot outputs (y)
+            subplot(3, 2, (k - 1) * 2 + 2);
+            hold on;
+            stem(invariant_cases_n{k}, invariant_cases_y{k}, 'DisplayName', 'y[n]', 'LineStyle', '-');
+            title([name, ' Outputs (Case ', num2str(k), ')']);
+            xlabel('n');
+            ylabel('Output Amplitude');
+            legend('show');
+            hold off;
         end
-        title([name, ' Outputs']);
-        xlabel('n');
-        ylabel('Output Amplitude');
-        legend('show');
-        hold off;
     end
 
     % parameters
@@ -221,7 +222,7 @@ function result = testTimeVariance(system, name, enablePlot)
             fprintf('y_inc0 = [%s]\n', num2str(y_baseline));
         end
         
-        % store the values for plotting at the end
+        % store the values for plotting
         all_n = cell(increment_qty + 1, 1);
         all_x = cell(increment_qty + 1, 1);
         all_y = cell(increment_qty + 1, 1);
@@ -252,6 +253,14 @@ function result = testTimeVariance(system, name, enablePlot)
                 return; % have sufficient evidence for time variance
             end
         end
+        
+        % Store the last three invariant test cases
+        if i > iterations - 3
+            invariant_cases_n{end+1} = all_n{1};  % Store the numeric array
+            invariant_cases_x{end+1} = all_x{1};  % Store the numeric array
+            invariant_cases_y{end+1} = all_y{1};  % Store the numeric array
+        end
+        
         if verbose ~= 0
             fprintf('Iteration %d: Invariant\n', i);
         end
@@ -261,8 +270,8 @@ function result = testTimeVariance(system, name, enablePlot)
     result = false;
     
     % plot the first iteration where the system is time-invariant
-    if enablePlot
-        plotTimeInvariantIteration(all_n, all_x, all_y, increment_qty);
+    if enablePlot && numel(invariant_cases_n) == 3
+        plotTimeInvariantIteration(invariant_cases_n, invariant_cases_x, invariant_cases_y);
     end
 end
 
