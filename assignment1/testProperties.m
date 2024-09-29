@@ -319,11 +319,138 @@ function result = testCausality(system, name, enablePlot)
         if y1(i) ~= y2(i)
             %fprintf("The system is non-causal: y1(%d) = %.2f, y2(%d) = %.2f\n", i, y1(i), i, y2(i));
             result = false;
+
+            %Printing the non-causal case if the two values are not equal
+
+            if enablePlot == true
+                figure;
+            
+                subplot(2,2,1);
+                stem(n, impulse_step, 'b', 'DisplayName', 'x1');
+                hold on; 
+                stem(n(i), impulse_step(i), 'ro', 'DisplayName', 'Non-causal value'); 
+                text(n(i), impulse_step(i), ['(', num2str(n(i)), ', ', num2str(impulse_step(i)), ')'], 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
+                hold off;
+                title(['Input 1 for ',name]);
+                xlabel('n');
+                ylabel('Input Amplitude'); 
+                ylim([min([impulse_step, y1, y2, zero_vector]), max([impulse_step, y1, y2, zero_vector])]); 
+                legend;
+            
+                subplot(2,2,2);
+                stem(n, zero_vector, 'b', 'DisplayName', 'x2');
+                hold on;
+                stem(n(i), zero_vector(i), 'ro', 'DisplayName', 'Non-causal value'); 
+                text(n(i), zero_vector(i), ['(', num2str(n(i)), ', ', num2str(zero_vector(i)), ')'], 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
+                hold off;
+                title(['Input 2 for ',name]);
+                xlabel('n');
+                ylabel('Input Amplitude'); 
+                ylim([min([impulse_step, y1, y2, zero_vector]), max([impulse_step, y1, y2, zero_vector])]);
+                legend;
+            
+                subplot(2, 2, 3);
+                stem(n, y1, 'b', 'DisplayName', 'y1'); 
+                hold on;
+                stem(n(i), y1(i), 'ro', 'DisplayName', 'Non-causal value'); 
+                text(n(i), y1(i), ['(', num2str(n(i)), ', ', num2str(y1(i)), ')'], 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
+                hold off;
+                title(['Output 1 for ',name]);
+                xlabel('n');
+                ylabel('Output Amplitude');
+                ylim([min([impulse_step, y1, y2, zero_vector]), max([impulse_step, y1, y2, zero_vector])]);
+                legend;
+            
+                subplot(2, 2, 4);
+                stem(n, y2, 'b', 'DisplayName', 'y2'); 
+                hold on;
+                stem(n(i), y2(i), 'ro', 'DisplayName', 'Non-causal value'); 
+                text(n(i), y2(i), ['(', num2str(n(i)), ', ', num2str(y2(i)), ')'], 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
+                hold off;
+                title(['Output 2 for ',name]);
+                xlabel('n');
+                ylabel('Output Amplitude');
+                ylim([min([impulse_step, y1, y2, zero_vector]), max([impulse_step, y1, y2, zero_vector])]);
+                legend;
+            
+                sgtitle(['Test Case Proving Non-Causality for ', name], 'FontWeight', 'bold');
+            end
+            
+            
+            
+
             return;
         end
     
     end
 
+    if enablePlot == true
+
+        i = 8;
+
+        impulse_step_zeros = zeros(1, i-1);
+        impulse_step_values = ones(1, 11-i+1);
+        impulse_step = [impulse_step_zeros, impulse_step_values];
+    
+        y1 = system(n, impulse_step);
+    
+        zero_vector = zeros(1, arr_len);
+        zero_vector(i) = 1;
+    
+        y2 = system(n, zero_vector);
+
+        figure;
+        subplot(2,2,1);
+        stem(n, impulse_step, 'b', 'DisplayName', 'x1');
+        hold on; 
+        stem(n(i), impulse_step(i), 'ro', 'DisplayName', 'Non-causal value'); 
+        text(n(i), impulse_step(i), ['(', num2str(n(i)), ', ', num2str(impulse_step(i)), ')'], 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
+        hold off;
+        title(['Input 1 for ',name]);
+        xlabel('n');
+        ylabel('Input Amplitude'); 
+        ylim([min([impulse_step, y1, y2, zero_vector]), max([impulse_step, y1, y2, zero_vector])]); 
+        legend;
+    
+        subplot(2,2,2);
+        stem(n, zero_vector, 'b', 'DisplayName', 'x2');
+        hold on;
+        stem(n(i), zero_vector(i), 'ro', 'DisplayName', 'Non-causal value'); 
+        text(n(i), zero_vector(i), ['(', num2str(n(i)), ', ', num2str(zero_vector(i)), ')'], 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
+        hold off;
+        title(['Input 2 for ',name]);
+        xlabel('n');
+        ylabel('Input Amplitude'); 
+        ylim([min([impulse_step, y1, y2, zero_vector]), max([impulse_step, y1, y2, zero_vector])]);
+        legend;
+    
+        subplot(2, 2, 3);
+        stem(n, y1, 'b', 'DisplayName', 'y1'); 
+        hold on;
+        stem(n(i), y1(i), 'ro', 'DisplayName', 'Non-causal value'); 
+        text(n(i), y1(i), ['(', num2str(n(i)), ', ', num2str(y1(i)), ')'], 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
+        hold off;
+        title(['Output 1 for ',name]);
+        xlabel('n');
+        ylabel('Output Amplitude');
+        ylim([min([impulse_step, y1, y2, zero_vector]), max([impulse_step, y1, y2, zero_vector])]);
+        legend;
+    
+        subplot(2, 2, 4);
+        stem(n, y2, 'b', 'DisplayName', 'y2'); 
+        hold on;
+        stem(n(i), y2(i), 'ro', 'DisplayName', 'Non-causal value'); 
+        text(n(i), y2(i), ['(', num2str(n(i)), ', ', num2str(y2(i)), ')'], 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
+        hold off;
+        title(['Output 2 for ',name]);
+        xlabel('n');
+        ylabel('Output Amplitude');
+        ylim([min([impulse_step, y1, y2, zero_vector]), max([impulse_step, y1, y2, zero_vector])]);
+        legend;
+    
+        sgtitle(['Test Case Proving Causality for ', name], 'FontWeight', 'bold');
+
+    end
 end
 
 % Function to test memory of system returning true or false,
