@@ -375,9 +375,6 @@ function result = testCausality(system, name, enablePlot)
             
                 sgtitle(['Test Case Proving Non-Causality for ', name], 'FontWeight', 'bold');
             end
-            
-            
-            
 
             return;
         end
@@ -403,7 +400,7 @@ function result = testCausality(system, name, enablePlot)
         subplot(2,2,1);
         stem(n, impulse_step, 'b', 'DisplayName', 'x1');
         hold on; 
-        stem(n(i), impulse_step(i), 'ro', 'DisplayName', 'Non-causal value'); 
+        stem(n(i), impulse_step(i), 'ro', 'DisplayName', 'Example causal value'); 
         text(n(i), impulse_step(i), ['(', num2str(n(i)), ', ', num2str(impulse_step(i)), ')'], 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
         hold off;
         title(['Input 1 for ',name]);
@@ -415,7 +412,7 @@ function result = testCausality(system, name, enablePlot)
         subplot(2,2,2);
         stem(n, zero_vector, 'b', 'DisplayName', 'x2');
         hold on;
-        stem(n(i), zero_vector(i), 'ro', 'DisplayName', 'Non-causal value'); 
+        stem(n(i), zero_vector(i), 'ro', 'DisplayName', 'Example causal value'); 
         text(n(i), zero_vector(i), ['(', num2str(n(i)), ', ', num2str(zero_vector(i)), ')'], 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
         hold off;
         title(['Input 2 for ',name]);
@@ -427,7 +424,7 @@ function result = testCausality(system, name, enablePlot)
         subplot(2, 2, 3);
         stem(n, y1, 'b', 'DisplayName', 'y1'); 
         hold on;
-        stem(n(i), y1(i), 'ro', 'DisplayName', 'Non-causal value'); 
+        stem(n(i), y1(i), 'ro', 'DisplayName', 'Example causal value'); 
         text(n(i), y1(i), ['(', num2str(n(i)), ', ', num2str(y1(i)), ')'], 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
         hold off;
         title(['Output 1 for ',name]);
@@ -439,7 +436,7 @@ function result = testCausality(system, name, enablePlot)
         subplot(2, 2, 4);
         stem(n, y2, 'b', 'DisplayName', 'y2'); 
         hold on;
-        stem(n(i), y2(i), 'ro', 'DisplayName', 'Non-causal value'); 
+        stem(n(i), y2(i), 'ro', 'DisplayName', 'Example causal value'); 
         text(n(i), y2(i), ['(', num2str(n(i)), ', ', num2str(y2(i)), ')'], 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
         hold off;
         title(['Output 2 for ',name]);
@@ -465,19 +462,146 @@ function result = testMemory(system, name, enablePlot)
     result = false;
 
     for i= 1:11
-
         x2 = zeros(1, arr_len);
-    
         x2(i) = 1;
     
         y2 = system(n, x2);
     
         if y1(i) ~= y2(i)
-            %fprintf("The system has memory: y1(%d) = %.2f, y2(%d) = %.2f\n", i, y1(i), i, y2(i));
             result = true;
+
+            if enablePlot == true
+                figure;
+
+                % Plot Input 1 (x1)
+                subplot(2,2,1);
+                stem(n, x1, 'b', 'DisplayName', 'x1');
+                hold on;
+                stem(n(i), x1(i), 'ro', 'DisplayName', 'Memory value');
+                text(n(i), x1(i), ['(', num2str(n(i)), ', ', num2str(x1(i)), ')'], ...
+                     'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right', 'FontSize', 8);
+                hold off;
+                title(['Input 1 for ', name]);
+                xlabel('n');
+                ylabel('Input Amplitude');
+                ylim([min([x1, y1, y2]), max([x1, y1, y2])]);
+                legend;
+
+                % Plot Input 2 (x2)
+                subplot(2,2,2);
+                stem(n, x2, 'b', 'DisplayName', 'x2');
+                hold on;
+                stem(n(i), x2(i), 'ro', 'DisplayName', 'Memory value');
+                text(n(i), x2(i), ['(', num2str(n(i)), ', ', num2str(x2(i)), ')'], ...
+                     'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right', 'FontSize', 8);
+                hold off;
+                title(['Input 2 for ', name]);
+                xlabel('n');
+                ylabel('Input Amplitude');
+                ylim([min([x1, y1, y2]), max([x1, y1, y2])]);
+                legend;
+
+                % Plot Output 1 (y1)
+                subplot(2,2,3);
+                stem(n, y1, 'b', 'DisplayName', 'y1');
+                hold on;
+                stem(n(i), y1(i), 'ro', 'DisplayName', 'Memory value');
+                text(n(i), y1(i), ['(', num2str(n(i)), ', ', num2str(y1(i)), ')'], ...
+                     'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right', 'FontSize', 8);
+                hold off;
+                title(['Output 1 for ', name]);
+                xlabel('n');
+                ylabel('Output Amplitude');
+                ylim([min([x1, y1, y2]), max([x1, y1, y2])]);
+                legend;
+
+                % Plot Output 2 (y2)
+                subplot(2,2,4);
+                stem(n, y2, 'b', 'DisplayName', 'y2');
+                hold on;
+                stem(n(i), y2(i), 'ro', 'DisplayName', 'Memory value');
+                text(n(i), y2(i), ['(', num2str(n(i)), ', ', num2str(y2(i)), ')'], ...
+                     'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right', 'FontSize', 8);
+                hold off;
+                title(['Output 2 for ', name]);
+                xlabel('n');
+                ylabel('Output Amplitude');
+                ylim([min([x1, y1, y2]), max([x1, y1, y2])]);
+                legend;
+
+                sgtitle(['Test Case Proving Memory for ', name], 'FontWeight', 'bold');
+            end
             return;
-    
         end
+    end
+
+    if enablePlot == true
+        i = 5;
+
+        x2 = zeros(1, arr_len);
+        x2(i) = 1;
+    
+        y2 = system(n, x2);
+
+        figure;
+
+        % Plot Input 1 (x1)
+        subplot(2,2,1);
+        stem(n, x1, 'b', 'DisplayName', 'x1');
+        hold on;
+        stem(n(i), x1(i), 'ro', 'DisplayName', 'Memoryless value');
+        text(n(i), x1(i), ['(', num2str(n(i)), ', ', num2str(x1(i)), ')'], ...
+            'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right', 'FontSize', 8);
+        hold off;
+        title(['Input 1 for ', name]);
+        xlabel('n');
+        ylabel('Input Amplitude');
+        ylim([min([x1, y1, y2]), max([x1, y1, y2])]);
+        legend;
+
+        % Plot Input 2 (x2)
+        subplot(2,2,2);
+        stem(n, x2, 'b', 'DisplayName', 'x2');
+        hold on;
+        stem(n(i), x2(i), 'ro', 'DisplayName', 'Memoryless value');
+        text(n(i), x2(i), ['(', num2str(n(i)), ', ', num2str(x2(i)), ')'], ...
+            'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right', 'FontSize', 8);
+        hold off;
+        title(['Input 2 for ', name]);
+        xlabel('n');
+        ylabel('Input Amplitude');
+        ylim([min([x1, y1, y2]), max([x1, y1, y2])]);
+        legend;
+
+        % Plot Output 1 (y1)
+        subplot(2,2,3);
+        stem(n, y1, 'b', 'DisplayName', 'y1');
+        hold on;
+        stem(n(i), y1(i), 'ro', 'DisplayName', 'Memoryless value');
+        text(n(i), y1(i), ['(', num2str(n(i)), ', ', num2str(y1(i)), ')'], ...
+            'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right', 'FontSize', 8);
+        hold off;
+        title(['Output 1 for ', name]);
+        xlabel('n');
+        ylabel('Output Amplitude');
+        ylim([min([x1, y1, y2]), max([x1, y1, y2])]);
+        legend;
+
+        % Plot Output 2 (y2)
+        subplot(2,2,4);
+        stem(n, y2, 'b', 'DisplayName', 'y2');
+        hold on;
+        stem(n(i), y2(i), 'ro', 'DisplayName', 'Memoryless value');
+        text(n(i), y2(i), ['(', num2str(n(i)), ', ', num2str(y2(i)), ')'], ...
+            'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right', 'FontSize', 8);
+        hold off;
+        title(['Output 2 for ', name]);
+        xlabel('n');
+        ylabel('Output Amplitude');
+        ylim([min([x1, y1, y2]), max([x1, y1, y2])]);
+        legend;
+
+        sgtitle(['Test Case Proving Memoryless for ', name], 'FontWeight', 'bold');
 
     end
 
