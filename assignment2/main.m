@@ -11,22 +11,134 @@ systemNames = ['A', 'B', 'C'];
 for index = 1:length(systemList)
     system = systemList{index};
     systemName = systemNames(index);
+    n = -10:10;
+
+    % section i: impulse response
+    h = calcImpulseResponse(system, n, false, false, systemName);
+
+    % section ii: step response
+    s = calcStepResponse(system, n, false, false, systemName);
+
+    % section iii: compare step response with cumsum of impulse response
+    h_cumsum = calcCumSumImpulseResponse(system, n, false, false, systemName, h, s);
+
+    % section iv: compare impulse response with first diff of step response
+    s_diff = calcStepResponseDiff(system, n, false, true, systemName, h, s);
     
-    % calling functions for section V,VI, & VII, producing plots and 
-    % printing results
-    if verifyConvolution(system, systemName)
-        fprintf('Convolution with impulse response and direct computation are equivalent for System %s\n', systemName);
-    else
-        fprintf('Convolution with impulse response and direct computation are NOT equivalent for System %s\n', systemName);
+    % calling functions for section V,VI, & VII, producing plots and printing results
+    % if verifyConvolution(system, systemName)
+    %     fprintf('Convolution with impulse response and direct computation are equivalent for System %s\n', systemName);
+    % else
+    %     fprintf('Convolution with impulse response and direct computation are NOT equivalent for System %s\n', systemName);
+    % end
+end
+
+% section i: returns the unit impulse response of a system
+function h = calcImpulseResponse(system, n, verbose, showPlot, systemName)
+
+    % compute the impulse response
+    delta = zeros(1, length(n));
+    delta(n == 0) = 1;
+    h = system(n, delta);
+
+    % print the impulse response vector if verbose is 1
+    if verbose == 1
+        fprintf('Impulse response vector for System %s:\n', systemName);
+        disp(h);
+    end
+
+    % plot h if showPlot is true
+    if showPlot
+        figure;
+        stem(n, h);
+        xlabel('n');
+        ylabel('h[n]');
+        title(['Impulse Response of System ', systemName]);
+        grid on;
     end
 end
 
-% function for section I
-% returns the unit impluse response of a system
-function h = calcImpulseResponse(system, n)
-    delta = zeros(1, length(n));
-    delta(n==0) = 1;
-    h = system(n, delta);
+% section ii: returns the unit step response of a system
+function s = calcStepResponse(system, n, verbose, showPlot, systemName)
+
+    % compute the step response
+    u = zeros(1, length(n));
+    u(n >= 0) = 1;
+    s = system(n, u);
+
+    % print the step response vector if verbose is 1
+    if verbose == 1
+        fprintf('Step response vector for System %s:\n', systemName);
+        disp(s);
+    end
+
+    % plot s if showPlot is true
+    if showPlot
+        figure;
+        stem(n, s);
+        xlabel('n');
+        ylabel('s[n]');
+        title(['Step Response of System ', systemName]);
+        grid on;
+    end
+end
+
+% section iii: compare unit step response with the cumsum of impulse response
+function h_cumsum = calcCumSumImpulseResponse(system, n, verbose, showPlot, systemName, h, s)
+
+    % compute the cumsum of the impulse response
+    h_cumsum = cumsum(h);
+
+    % print the comp vectors if verbose is on
+    if verbose == 1
+        fprintf('Step response vector for System %s:\n', systemName);
+        disp(s);
+        fprintf('Cumsum of impulse response vector for System %s:\n', systemName);
+        disp(h_cumsum);
+    end
+
+    % plot s and h_cumsum if showPlot is true
+    if showPlot
+        figure;
+        stem(n, s, 'b', 'DisplayName', 'Step Response', 'Marker', 'o', 'LineStyle', '-');
+        hold on;
+        stem(n, h_cumsum, 'r', 'DisplayName', 'Cumsum of Impulse Response', 'Marker', 'x', 'LineStyle', '--');
+        xlabel('n');
+        ylabel('y[n]');
+        title(['Step Response and Cumsum of Impulse Response of System ', systemName]);
+        legend('Location', 'southoutside');
+        grid on;
+        hold off;
+    end
+end
+
+% section iv: compare impulse response with first diff of step response
+function s_diff = calcStepResponseDiff(system, n, verbose, showPlot, systemName, h, s)
+
+    % compute the first difference of the step response
+    s_diff = diff([0, s]);
+
+    % print the comp vectors if verbose is on
+    if verbose == 1
+        fprintf('Step response vector for System %s:\n', systemName);
+        disp(s);
+        fprintf('Cumsum of impulse response vector for System %s:\n', systemName);
+        disp(h_cumsum);
+    end
+
+    % plot h and s_diff if showPlot is on
+    if showPlot
+        figure;
+        stem(n, h, 'b', 'DisplayName', 'Impulse Response', 'Marker', 'o', 'LineStyle', '-');
+        hold on;
+        stem(n, s_diff, 'r', 'DisplayName', 'First Difference of Step Response', 'Marker', 'x', 'LineStyle', '--');
+        xlabel('n');
+        ylabel('y[n]');
+        title(['Impulse Response and First Difference of Step Response of System ', systemName]);
+        legend('Location', 'southoutside');
+        grid on;
+        hold off;
+    end
 end
 
 % function for section V
