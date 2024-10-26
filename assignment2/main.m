@@ -13,7 +13,11 @@ for index = 1:length(systemList)
     systemName = systemNames(index);
 
     % section i: impulse response
-    h = calcImpulseResponse(system, -10:10, false, true, systemName);
+    % h = calcImpulseResponse(system, -10:10, false, true, systemName);
+
+    % section ii: step response
+    % s = calcStepResponse(system, -10:10, false, true, systemName);
+
     
     % calling functions for section V,VI, & VII, producing plots and printing results
     % if verifyConvolution(system, systemName)
@@ -28,7 +32,7 @@ function h = calcImpulseResponse(system, n, verbose, showPlot, systemName)
 
     % compute the impulse response
     delta = zeros(1, length(n));
-    delta(n==0) = 1;
+    delta(n == 0) = 1;
     h = system(n, delta);
 
     % print the impulse response vector if verbose is 1
@@ -46,7 +50,31 @@ function h = calcImpulseResponse(system, n, verbose, showPlot, systemName)
         title(['Impulse Response of ', systemName]);
         grid on;
     end
+end
 
+% section ii: returns the unit step response of a system
+function s = calcStepResponse(system, n, verbose, showPlot, systemName)
+
+    % compute the step response
+    u = zeros(1, length(n));
+    u(n >= 0) = 1;
+    s = system(n, u);
+
+    % print the step response vector if verbose is 1
+    if verbose == 1
+        disp('Step response vector:');
+        disp(s);
+    end
+
+    % plot s if showPlot is true
+    if showPlot
+        figure;
+        stem(n, s);
+        xlabel('n');
+        ylabel('s[n]');
+        title(['Step Response of ', systemName]);
+        grid on;
+    end
 end
 
 % function for section V
