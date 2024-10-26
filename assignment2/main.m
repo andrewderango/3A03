@@ -13,11 +13,13 @@ for index = 1:length(systemList)
     systemName = systemNames(index);
 
     % section i: impulse response
-    % h = calcImpulseResponse(system, -10:10, false, true, systemName);
+    h = calcImpulseResponse(system, -10:10, false, false, systemName);
 
     % section ii: step response
-    % s = calcStepResponse(system, -10:10, false, true, systemName);
+    s = calcStepResponse(system, -10:10, false, false, systemName);
 
+    % section iii: compare step response with cumsum of impulse response
+    h_cumsum = calcCumSumImpulseResponse(system, -10:10, true, true, systemName, h, s);
     
     % calling functions for section V,VI, & VII, producing plots and printing results
     % if verifyConvolution(system, systemName)
@@ -37,7 +39,7 @@ function h = calcImpulseResponse(system, n, verbose, showPlot, systemName)
 
     % print the impulse response vector if verbose is 1
     if verbose == 1
-        disp('Impulse response vector:');
+        fprintf('Impulse response vector for %s:\n', systemName);
         disp(h);
     end
 
@@ -62,7 +64,7 @@ function s = calcStepResponse(system, n, verbose, showPlot, systemName)
 
     % print the step response vector if verbose is 1
     if verbose == 1
-        disp('Step response vector:');
+        fprintf('Step response vector for %s:\n', systemName);
         disp(s);
     end
 
@@ -74,6 +76,35 @@ function s = calcStepResponse(system, n, verbose, showPlot, systemName)
         ylabel('s[n]');
         title(['Step Response of ', systemName]);
         grid on;
+    end
+end
+
+% section iii: compare unit step response with the cumsum of impulse response
+function h_cumsum = calcCumSumImpulseResponse(system, n, verbose, showPlot, systemName, h, s)
+
+    % compute the cumsum of the impulse response
+    h_cumsum = cumsum(h);
+
+    % print the step response vector if verbose is 1
+    if verbose == 1
+        fprintf('Step response vector for %s:\n', systemName);
+        disp(s);
+        fprintf('Cumsum of impulse response vector for %s:\n', systemName);
+        disp(h_cumsum);
+    end
+
+    % plot s and h_cumsum if showPlot is true
+    if showPlot
+        figure;
+        stem(n, s, 'b', 'DisplayName', 'Step Response', 'Marker', 'o', 'LineStyle', '-');
+        hold on;
+        stem(n, h_cumsum, 'r', 'DisplayName', 'Cumsum of Impulse Response', 'Marker', 'x', 'LineStyle', '--');
+        xlabel('n');
+        ylabel('Response');
+        title(['Step Response and Cumsum of Impulse Response of ', systemName]);
+        legend('Location', 'southoutside');
+        grid on;
+        hold off;
     end
 end
 
