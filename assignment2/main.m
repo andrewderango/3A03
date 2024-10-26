@@ -11,22 +11,42 @@ systemNames = ['A', 'B', 'C'];
 for index = 1:length(systemList)
     system = systemList{index};
     systemName = systemNames(index);
+
+    % section i: impulse response
+    h = calcImpulseResponse(system, -10:10, false, true, systemName);
     
-    % calling functions for section V,VI, & VII, producing plots and 
-    % printing results
-    if verifyConvolution(system, systemName)
-        fprintf('Convolution with impulse response and direct computation are equivalent for System %s\n', systemName);
-    else
-        fprintf('Convolution with impulse response and direct computation are NOT equivalent for System %s\n', systemName);
-    end
+    % calling functions for section V,VI, & VII, producing plots and printing results
+    % if verifyConvolution(system, systemName)
+    %     fprintf('Convolution with impulse response and direct computation are equivalent for System %s\n', systemName);
+    % else
+    %     fprintf('Convolution with impulse response and direct computation are NOT equivalent for System %s\n', systemName);
+    % end
 end
 
-% function for section I
-% returns the unit impluse response of a system
-function h = calcImpulseResponse(system, n)
+% section i: returns the unit impulse response of a system
+function h = calcImpulseResponse(system, n, verbose, showPlot, systemName)
+
+    % compute the impulse response
     delta = zeros(1, length(n));
     delta(n==0) = 1;
     h = system(n, delta);
+
+    % print the impulse response vector if verbose is 1
+    if verbose == 1
+        disp('Impulse response vector:');
+        disp(h);
+    end
+
+    % plot h if showPlot is true
+    if showPlot
+        figure;
+        stem(n, h);
+        xlabel('n');
+        ylabel('h[n]');
+        title(['Impulse Response of ', systemName]);
+        grid on;
+    end
+
 end
 
 % function for section V
