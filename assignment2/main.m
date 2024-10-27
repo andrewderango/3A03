@@ -29,6 +29,9 @@ for index = 1:length(systemList)
     verifyConvolution(system, systemName, true);
 
     formalLogicalTest(system, systemName, h, s, n);
+
+    filterTest(system, systemName, h, 1);
+
 end
 
 % section i: returns the unit impulse response of a system
@@ -269,3 +272,42 @@ function formalLogicalTest(system, systemName, h, s, n)
 
 
 end
+
+function filterTest(system, systemName, h, verbose)
+
+    % Compute the Fourier Transform of the impulse response
+    fTransformImpulse = fft(h);
+
+    N = 21; 
+    delta_t = 1;
+    Fs = 1 / delta_t; 
+    
+    
+    f = (0:N/2)*(Fs/N);
+
+    % Take only the first half of the FFT result (positive frequencies)
+    fTransformImpulse_positive = fTransformImpulse(1:N/2+1);
+
+    low_freq_response = max(abs(fTransformImpulse_positive(1:round(N/10))));
+    high_freq_response = max(abs(fTransformImpulse_positive(round(N/2-N/10):end)));
+
+    if low_freq_response > high_freq_response
+        filterType = 'low-pass filter';
+    elseif high_freq_response > low_freq_response
+        filterType = 'high-pass filter';
+    else
+        filterType = 'band-pass filter'; %This could be changed...
+    end
+
+    if (verbose == 1)
+        fprintf('The filter type for system %s is %s.\n', systemName, filterType);
+        figure;
+        plot(f, abs(fTransformImpulse_positive));
+        title(['Frequency Response of System', systemName]);
+        xlabel('Normalized Frequency');
+        ylabel('Magnitude');
+        grid on;
+    end
+end
+
+
