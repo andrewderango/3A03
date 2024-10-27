@@ -32,7 +32,7 @@ for index = 1:length(systemList)
     formalLogicalTest(systemName, h, s, h_cumsum, s_diff, result_vii);
 
     % bonus 2
-    filterTest(systemName, h, 1, system);
+    filterTest(system, systemName, true);
 end
 
 % section i: returns the unit impulse response of a system
@@ -267,25 +267,29 @@ function formalLogicalTest(systemName, h, s, h_cumsum, s_diff, result_vii)
     end
 end
 
-function filterTest(systemName, h, verbose, system)
+% function for Bonus 2
+% displays frequency spectrums for the system's impulse response to
+% determine filtering properties
+function filterTest(system, systemName, showPlot)
 
-    vector = linspace(0, 999, 100000);
+    % calculate the impulse response for a longer period with higher Fs
+    n_new = linspace(0, 999, 100000);
 
-    h_new = calcImpulseResponse(system, vector, 1, false, systemName);
+    h_new = calcImpulseResponse(system, n_new, 0, false, systemName);
 
-
+    % sampling frequency used for calculating h_new
     Fs = (100000-1)/999;
 
-    %Calculate for half
+    % calculate for half
     [Mx_half,phx_half,f_half] = fourier_dt(h_new,Fs,'half');
 
-    %Plot if verbose is enabled
-    if (verbose == 1)
+    % plot if verbose is enabled
+    if (showPlot == true)
         figure
         subplot(2,1,1)
         plot(f_half,Mx_half)
         ylabel('|X(f)|')
-        title(['One-sided spectrum for System', systemName])
+        title(['One-sided spectrum for System ', systemName, ' impulse response'])
         subplot(2,1,2)
         plot(f_half,phx_half)
         ylabel('\angleX(f)')
