@@ -32,7 +32,7 @@ for index = 1:length(systemList)
     formalLogicalTest(systemName, h, s, h_cumsum, s_diff, result_vii);
 
     % bonus 2
-    filterTest(systemName, h, 1);
+    filterTest(systemName, h, 1, system);
 end
 
 % section i: returns the unit impulse response of a system
@@ -267,42 +267,29 @@ function formalLogicalTest(systemName, h, s, h_cumsum, s_diff, result_vii)
     end
 end
 
-function filterTest(systemName, h, verbose)
+function filterTest(systemName, h, verbose, system)
 
-    % Compute the Fourier Transform of the impulse response
-    fTransformImpulse = fft(h);
+    vector = linspace(0, 999, 100000);
 
-    %Number of points
-    N = 21; 
-    delta_t = 1;
-    Fs = 1 / delta_t; 
-    
-    % Frequencies only up to the nyquist frequency
-    f = (0:N/2)*(Fs/N);
+    h_new = calcImpulseResponse(system, vector, 1, false, systemName);
 
-    % Take only the first half of the FFT result (positive frequencies)
-    fTransformImpulse_positive = fTransformImpulse(1:N/2+1);
 
-    %Get high and low frequency responses
-    low_freq_response = max(abs(fTransformImpulse_positive(1:round(N/10))));
-    high_freq_response = max(abs(fTransformImpulse_positive(round(N/2-N/10):end)));
+    Fs = (100000-1)/999;
 
-    %Check to see what kind of filter
-    if low_freq_response > high_freq_response
-        fprintf('System %s is a low-pass filter\n', systemName);
-    elseif high_freq_response > low_freq_response
-        fprintf('System %s is a high-pass filter\n', systemName);
-    else
-        fprintf('System %s is a band-pass filter\n', systemName);
-    end
+    %Calculate for half
+    [Mx_half,phx_half,f_half] = fourier_dt(h_new,Fs,'half');
 
+    %Plot if verbose is enabled
     if (verbose == 1)
-        figure;
-        plot(f, abs(fTransformImpulse_positive));
-        title(['Frequency Response of System', systemName]);
-        xlabel('Normalized Frequency');
-        ylabel('Magnitude');
-        grid on;
+        figure
+        subplot(2,1,1)
+        plot(f_half,Mx_half)
+        ylabel('|X(f)|')
+        title(['One-sided spectrum for System', systemName])
+        subplot(2,1,2)
+        plot(f_half,phx_half)
+        ylabel('\angleX(f)')
+        xlabel('f (Hz)')
     end
 end
 
