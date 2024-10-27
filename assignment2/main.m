@@ -11,7 +11,7 @@ systemNames = ['A', 'B', 'C'];
 for index = 1:length(systemList)
     system = systemList{index};
     systemName = systemNames(index);
-    n = -10:10;
+    n = -10:10; % for use in section i-iv
 
     % section i: impulse response
     h = calcImpulseResponse(system, n, 0, false, systemName);
@@ -20,18 +20,19 @@ for index = 1:length(systemList)
     s = calcStepResponse(system, n, 0, false, systemName);
 
     % section iii: compare step response with cumsum of impulse response
-    h_cumsum = calcCumSumImpulseResponse(system, n, false, false, systemName, h, s);
+    h_cumsum = calcCumSumImpulseResponse(n, false, false, systemName, h, s);
 
     % section iv: compare impulse response with first diff of step response
-    s_diff = calcStepResponseDiff(system, n, false, true, systemName, h, s);
+    s_diff = calcStepResponseDiff(n, false, true, systemName, h, s);
     
-    % calling functions for section V,VI, & VII, producing plots and printing results
-    verifyConvolution(system, systemName, true);
+    % section v,vi, & vii: producing plots and printing results
+    result_vii = verifyConvolution(system, systemName, true);
+    
+    % bonus 1
+    formalLogicalTest(systemName, h, s, h_cumsum, s_diff, result_vii);
 
-    formalLogicalTest(system, systemName, h, s, n);
-
-    filterTest(system, systemName, h, 1);
-
+    % bonus 2
+    filterTest(systemName, h, 1);
 end
 
 % section i: returns the unit impulse response of a system
@@ -85,7 +86,7 @@ function s = calcStepResponse(system, n, verbose, showPlot, systemName)
 end
 
 % section iii: compare unit step response with the cumsum of impulse response
-function h_cumsum = calcCumSumImpulseResponse(system, n, verbose, showPlot, systemName, h, s)
+function h_cumsum = calcCumSumImpulseResponse(n, verbose, showPlot, systemName, h, s)
 
     % compute the cumsum of the impulse response
     h_cumsum = cumsum(h);
@@ -114,7 +115,7 @@ function h_cumsum = calcCumSumImpulseResponse(system, n, verbose, showPlot, syst
 end
 
 % section iv: compare impulse response with first diff of step response
-function s_diff = calcStepResponseDiff(system, n, verbose, showPlot, systemName, h, s)
+function s_diff = calcStepResponseDiff(n, verbose, showPlot, systemName, h, s)
 
     % compute the first difference of the step response
     s_diff = diff([0, s]);
@@ -142,7 +143,7 @@ function s_diff = calcStepResponseDiff(system, n, verbose, showPlot, systemName,
     end
 end
 
-% function for section V
+% function for section v
 % returns the output signal of the system with the ECG input signal
 function y = calcECGResponse(system)
     file = load('ECG_assignment2.mat');
@@ -151,7 +152,7 @@ function y = calcECGResponse(system)
     y = system(n, x);   % return output signal
 end
 
-% function for section VI
+% function for section vi
 % returns the output signal of the system with the respiration input signal
 function y = calcRespirationResponse(system)
     file = load('respiration_assignment2.mat');
@@ -160,7 +161,8 @@ function y = calcRespirationResponse(system)
     y = system(n, x);   % return output signal
 end
 
-% function for section VII
+% function for section vii
+% returns boolean result of the logical test
 function result = verifyConvolution(system, systemName, showPlot)
     tolerance = 1e-12;  % tolerance for checking equivalence
     result = true;      % assume true unless proven false
@@ -174,7 +176,7 @@ function result = verifyConvolution(system, systemName, showPlot)
     minLength = min(length(y1), length(y2));
     y1 = y1(1:minLength);               % makes both arrays the same length as the shorter one
     y2 = y2(1:minLength);
-    if any(abs(y1 - y2) > tolerance)         % checks equivalence
+    if any(abs(y1 - y2) > tolerance)    % checks equivalence
         result = false;
     end
     
@@ -207,10 +209,9 @@ function result = verifyConvolution(system, systemName, showPlot)
     minLength = min(length(y1), length(y2));
     y1 = y1(1:minLength);                   % makes both arrays teh same length as teh shorter one
     y2 = y2(1:minLength);
-    if any(abs(y1 - y2) > tolerance)             % checks equivalence
+    if any(abs(y1 - y2) > tolerance)        % checks equivalence
         result = false;
     end    
-    
 
     % plots both respiration output signals for visual comparison
 
@@ -233,47 +234,40 @@ function result = verifyConvolution(system, systemName, showPlot)
 end
 
 % function for Bonus 1
+% prints results of logical tests to the terminal
+function formalLogicalTest(systemName, h, s, h_cumsum, s_diff, result_vii) 
 
-function formalLogicalTest(system, systemName, h, s, n) 
+    tolerance = 1e-12; % tolerance for checking equivalence
 
-    tolerance = 1e-12;
-
-    %Logical Test III
-    fprintf('Performing Logical Test III for %s:\n', systemName);
-
-    h_cumsum = cumsum(h);
-
-    s = calcStepResponse(system, n, 0, false, systemName);
+    % logical test iii
+    fprintf('Performing Logical Test III for System %s:\n', systemName);
 
     if ~any(abs(h_cumsum - s) > tolerance )
-        fprintf('The cumsum of the unit impulse response is equivalent to the unit step function response for system %s\n\n', systemName);
+        fprintf('The cumulative sum of the unit impulse response and the unit step response are equivalent for System %s\n\n', systemName);
+    else
+        fprintf('The cumulative sum of the unit impulse response and the unit step response are NOT equivalent for System %s\n\n', systemName);
     end
 
-    %Logical Test IV
-    fprintf('Performing Logical Test IV for %s:\n', systemName);
-
-    s_diff = calcStepResponseDiff(system, n, 0, false, systemName, h, s);
+    % logical test iv
+    fprintf('Performing Logical Test IV for System %s:\n', systemName);
 
     if ~any(abs(h - s_diff) > tolerance)
-        fprintf('The first difference of the unit step response and the impulse response are equivalent for system %s\n\n', systemName);
+        fprintf('The first difference of the unit step response and the impulse response are equivalent for System %s\n\n', systemName);
+    else
+        fprintf('The first difference of the unit step response and the impulse response are NOT equivalent for System %s\n\n', systemName);
     end
 
-    %Logical Test VII
+    % logical test vii
+    fprintf('Performing Logical Test VII for System %s:\n', systemName);
 
-    fprintf('Performing Logical Test VII for %s:\n', systemName);
-
-    result = verifyConvolution(system, systemName, false);
-
-    if result
+    if result_vii
         fprintf('Convolution with impulse response and direct computation are equivalent for System %s\n\n', systemName);
     else
         fprintf('Convolution with impulse response and direct computation are NOT equivalent for System %s\n\n', systemName);
     end
-
-
 end
 
-function filterTest(system, systemName, h, verbose)
+function filterTest(systemName, h, verbose)
 
     % Compute the Fourier Transform of the impulse response
     fTransformImpulse = fft(h);
