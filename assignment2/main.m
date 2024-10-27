@@ -31,6 +31,8 @@ for index = 1:length(systemList)
     % else
     %     fprintf('Convolution with impulse response and direct computation are NOT equivalent for System %s\n', systemName);
     % end
+
+    formalLogicalTest(system, systemName, h, s);
 end
 
 % section i: returns the unit impulse response of a system
@@ -173,7 +175,7 @@ function result = verifyConvolution(system, systemName)
     minLength = min(length(y1), length(y2));
     y1 = y1(1:minLength);               % makes both arrays the same length as the shorter one
     y2 = y2(1:minLength);
-    if any(y1 - y2 > tolerance)         % checks equivalence
+    if any(abs(y1 - y2) > tolerance)         % checks equivalence
         result = false;
     end
     
@@ -204,7 +206,7 @@ function result = verifyConvolution(system, systemName)
     minLength = min(length(y1), length(y2));
     y1 = y1(1:minLength);                   % makes both arrays teh same length as teh shorter one
     y2 = y2(1:minLength);
-    if any(y1 - y2 > tolerance)             % checks equivalence
+    if any(abs(y1 - y2) > tolerance)             % checks equivalence
         result = false;
     end    
     
@@ -223,4 +225,21 @@ function result = verifyConvolution(system, systemName)
     xlabel('n');
     ylabel('Amplitude');
     hold off;
+end
+
+% function for Bonus 1
+
+function formalLogicalTest(system, systemName, h, s) 
+
+    tolerance = 1e-12;
+
+    fprintf('Performing Logical Test for III %s:\n', systemName);
+
+    %Calculate the cumsum
+    h_cumsum = cumsum(h);
+
+    if any(abs(h_cumsum - s) > tolerance )
+        result = false 
+    end
+
 end
