@@ -14,10 +14,10 @@ for index = 1:length(systemList)
     n = -10:10;
 
     % section i: impulse response
-    h = calcImpulseResponse(system, n, false, false, systemName);
+    h = calcImpulseResponse(system, n, 0, false, systemName);
 
     % section ii: step response
-    s = calcStepResponse(system, n, false, false, systemName);
+    s = calcStepResponse(system, n, 0, false, systemName);
 
     % section iii: compare step response with cumsum of impulse response
     h_cumsum = calcCumSumImpulseResponse(system, n, false, false, systemName, h, s);
@@ -26,11 +26,9 @@ for index = 1:length(systemList)
     s_diff = calcStepResponseDiff(system, n, false, true, systemName, h, s);
     
     % calling functions for section V,VI, & VII, producing plots and printing results
-    % if verifyConvolution(system, systemName)
-    %     fprintf('Convolution with impulse response and direct computation are equivalent for System %s\n', systemName);
-    % else
-    %     fprintf('Convolution with impulse response and direct computation are NOT equivalent for System %s\n', systemName);
-    % end
+    verifyConvolution(system, systemName, true);
+
+    formalLogicalTest(system, systemName, h, s, n);
 end
 
 % section i: returns the unit impulse response of a system
@@ -160,7 +158,7 @@ function y = calcRespirationResponse(system)
 end
 
 % function for section VII
-function result = verifyConvolution(system, systemName)
+function result = verifyConvolution(system, systemName, showPlot)
     tolerance = 1e-12;  % tolerance for checking equivalence
     result = true;      % assume true unless proven false
     
@@ -168,59 +166,106 @@ function result = verifyConvolution(system, systemName)
     x = file.x;                         % gets the input signal from the file
     y1 = calcECGResponse(system);       % computes output signal directly
     n = 0:length(x)-1;
-    h = calcImpulseResponse(system, n); % impulse response for system
+    h = calcImpulseResponse(system, n, 0, false, systemName); % impulse response for system
     y2 = conv(h,x);                     % computes output signal by convolution
     minLength = min(length(y1), length(y2));
     y1 = y1(1:minLength);               % makes both arrays the same length as the shorter one
     y2 = y2(1:minLength);
-    if any(y1 - y2 > tolerance)         % checks equivalence
+    if any(abs(y1 - y2) > tolerance)         % checks equivalence
         result = false;
     end
     
-    % plots both ECG output signals for visual comparison
-    figure;
-    subplot(2,2,1);
-    plot(n,y1,'r','DisplayName','ECG_Direct_Computation');
-    hold on;
-    title('ECG Output Signal by Direct Computation');
-    xlabel('n');
-    ylabel('Amplitude'); 
-    hold off;
-    subplot(2,2,2);
-    plot(n,y2,'r','DisplayName','ECG_Convolution');
-    hold on;
-    title('ECG Output Signal by Impulse Convolution');
-    xlabel('n');
-    ylabel('Amplitude');
-    hold off;
-    sgtitle(['Comparison between Direct Computation and Impulse Convolution for the ECG signal and Respiration Signal with System ', systemName], 'FontWeight', 'bold');
-    
+    if (showPlot == true)
+        % plots both ECG output signals for visual comparison
+        figure;
+        subplot(2,2,1);
+        plot(n,y1,'r','DisplayName','ECG_Direct_Computation');
+        hold on;
+        title('ECG Output Signal by Direct Computation');
+        xlabel('n');
+        ylabel('Amplitude'); 
+        hold off;
+        subplot(2,2,2);
+        plot(n,y2,'r','DisplayName','ECG_Convolution');
+        hold on;
+        title('ECG Output Signal by Impulse Convolution');
+        xlabel('n');
+        ylabel('Amplitude');
+        hold off;
+        sgtitle(['Comparison between Direct Computation and Impulse Convolution for the ECG signal and Respiration Signal with System ', systemName], 'FontWeight', 'bold');
+    end
+
     file = load('respiration_assignment2.mat');
     x = file.x;                             % gets the input signal from the file
     y1 = calcRespirationResponse(system);   % computes output signal directly
     n = 0:length(x)-1;
-    h = calcImpulseResponse(system, n);     % impulse response for system
+    h = calcImpulseResponse(system, n, 0, false, systemName);     % impulse response for system
     y2 = conv(h,x);                         % computes ouput signal by convolution
     minLength = min(length(y1), length(y2));
     y1 = y1(1:minLength);                   % makes both arrays teh same length as teh shorter one
     y2 = y2(1:minLength);
-    if any(y1 - y2 > tolerance)             % checks equivalence
+    if any(abs(y1 - y2) > tolerance)             % checks equivalence
         result = false;
     end    
     
+
     % plots both respiration output signals for visual comparison
-    subplot(2,2,3);
-    plot(n,y1,'b','DisplayName','Respiration_Direct_Computation');
-    hold on;
-    title('Respiration Output Signal by Direct Computation');
-    xlabel('n');
-    ylabel('Amplitude'); 
-    hold off;
-    subplot(2,2,4);
-    plot(n,y2,'b','DisplayName','Respiration_Convolution');
-    hold on;
-    title('Respiration Output Signal by Impulse Convolution');
-    xlabel('n');
-    ylabel('Amplitude');
-    hold off;
+
+    if (showPlot == true)
+        subplot(2,2,3);
+        plot(n,y1,'b','DisplayName','Respiration_Direct_Computation');
+        hold on;
+        title('Respiration Output Signal by Direct Computation');
+        xlabel('n');
+        ylabel('Amplitude'); 
+        hold off;
+        subplot(2,2,4);
+        plot(n,y2,'b','DisplayName','Respiration_Convolution');
+        hold on;
+        title('Respiration Output Signal by Impulse Convolution');
+        xlabel('n');
+        ylabel('Amplitude');
+        hold off;
+    end
+end
+
+% function for Bonus 1
+
+function formalLogicalTest(system, systemName, h, s, n) 
+
+    tolerance = 1e-12;
+
+    %Logical Test III
+    fprintf('Performing Logical Test III for %s:\n', systemName);
+
+    h_cumsum = cumsum(h);
+
+    s = calcStepResponse(system, n, 0, false, systemName);
+
+    if ~any(abs(h_cumsum - s) > tolerance )
+        fprintf('The cumsum of the unit impulse response is equivalent to the unit step function response for system %s\n\n', systemName);
+    end
+
+    %Logical Test IV
+    fprintf('Performing Logical Test IV for %s:\n', systemName);
+
+    s_diff = calcStepResponseDiff(system, n, 0, false, systemName, h, s);
+
+    if ~any(abs(h - s_diff) > tolerance)
+        fprintf('The first difference of the unit step response and the impulse response are equivalent for system %s\n\n', systemName);
+    end
+
+    %Logical Test VII
+
+    fprintf('Performing Logical Test VII for %s:\n', systemName);
+
+    result = verifyConvolution(system, systemName, false);
+
+    if result
+        fprintf('Convolution with impulse response and direct computation are equivalent for System %s\n\n', systemName);
+    else
+        fprintf('Convolution with impulse response and direct computation are NOT equivalent for System %s\n\n', systemName);
+    end
+
+
 end
