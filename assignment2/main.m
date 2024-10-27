@@ -278,29 +278,31 @@ function filterTest(system, systemName, h, verbose)
     % Compute the Fourier Transform of the impulse response
     fTransformImpulse = fft(h);
 
+    %Number of points
     N = 21; 
     delta_t = 1;
     Fs = 1 / delta_t; 
     
-    
+    % Frequencies only up to the nyquist frequency
     f = (0:N/2)*(Fs/N);
 
     % Take only the first half of the FFT result (positive frequencies)
     fTransformImpulse_positive = fTransformImpulse(1:N/2+1);
 
+    %Get high and low frequency responses
     low_freq_response = max(abs(fTransformImpulse_positive(1:round(N/10))));
     high_freq_response = max(abs(fTransformImpulse_positive(round(N/2-N/10):end)));
 
+    %Check to see what kind of filter
     if low_freq_response > high_freq_response
-        filterType = 'low-pass filter';
+        fprintf('System %s is a low-pass filter\n', systemName);
     elseif high_freq_response > low_freq_response
-        filterType = 'high-pass filter';
+        fprintf('System %s is a high-pass filter\n', systemName);
     else
-        filterType = 'band-pass filter'; %This could be changed...
+        fprintf('System %s is a band-pass filter\n', systemName);
     end
 
     if (verbose == 1)
-        fprintf('The filter type for system %s is %s.\n', systemName, filterType);
         figure;
         plot(f, abs(fTransformImpulse_positive));
         title(['Frequency Response of System', systemName]);
