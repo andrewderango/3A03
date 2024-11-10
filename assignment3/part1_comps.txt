@@ -1,0 +1,4 @@
+DTW distance (no padding) for Original Signal: 0.210387
+DTW distance (zero padding) for Original Signal: 1.104660
+DTW distance (no padding) for Modified Signal: 0.210387
+DTW distance (zero padding) for Modified Signal: 0.225099
