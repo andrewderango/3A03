@@ -78,7 +78,7 @@ function compare_with_dtw(signal, Fs, signal_name)
     [dist_zero_padding, ix_zero_padding, iy_zero_padding] = dtw(Mx, Mx_padded);
 
     % display DTW distances
-    if signal_name == 'Original Signal'
+    if strcmp(signal_name, 'Original Signal')
         fileID = fopen('part1_comps.txt', 'w');
     else
         fileID = fopen('part1_comps.txt', 'a');
@@ -89,14 +89,12 @@ function compare_with_dtw(signal, Fs, signal_name)
     disp(['DTW distance (no padding) for ', signal_name, ': ', num2str(dist_no_padding)]);
     disp(['DTW distance (zero padding) for ', signal_name, ': ', num2str(dist_zero_padding)]);
 
-    % Plot DTW alignments
+    % plot DTW alignments
     figure;
     subplot(2,1,1);
-    plot_dtw_alignment(f, Mx, f_half, Mx_half, ix_no_padding, iy_no_padding, ...
-        sprintf('DTW Alignment (No Padding) for %s', signal_name));
+    plot_dtw_alignment(f, Mx, f_half, Mx_half, ix_no_padding, iy_no_padding, sprintf('DTW Alignment (No Padding) for %s', signal_name));
     subplot(2,1,2);
-    plot_dtw_alignment(f, Mx, f_padded, Mx_padded, ix_zero_padding, iy_zero_padding, ...
-        sprintf('DTW Alignment (Zero Padding) for %s', signal_name));
+    plot_dtw_alignment(f, Mx, f_padded, Mx_padded, ix_zero_padding, iy_zero_padding, sprintf('DTW Alignment (Zero Padding) for %s', signal_name));
 end
 
 function plot_dtw_alignment(f1, Mx1, f2, Mx2, ix, iy, title_str)
@@ -118,5 +116,10 @@ function plot_dtw_alignment(f1, Mx1, f2, Mx2, ix, iy, title_str)
     title(title_str);
     xlabel('Frequency (Hz)');
     ylabel('Magnitude');
+    if strcmp(title_str, 'DTW Alignment (No Padding) for Original Signal') || strcmp(title_str, 'DTW Alignment (Zero Padding) for Original Signal')
+        xlim([0 10]);
+    elseif strcmp(title_str, 'DTW Alignment (No Padding) for Modified Signal') || strcmp(title_str, 'DTW Alignment (Zero Padding) for Modified Signal')
+        xlim([0 20]);
+    end
     hold off;
 end
