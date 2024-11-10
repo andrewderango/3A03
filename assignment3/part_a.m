@@ -69,15 +69,46 @@ function compare_with_dtw(signal, Fs, signal_name)
     padded_signal = [half_signal; zeros(N/2, 1)];
 
     % compute Fourier transforms
-    [Mx, ~, ~] = fourier_dt(signal, Fs, 'half');
-    [Mx_half, ~, ~] = fourier_dt(half_signal, Fs, 'half');
-    [Mx_padded, ~, ~] = fourier_dt(padded_signal, Fs, 'half');
+    [Mx, ~, f] = fourier_dt(signal, Fs, 'half');
+    [Mx_half, ~, f_half] = fourier_dt(half_signal, Fs, 'half');
+    [Mx_padded, ~, f_padded] = fourier_dt(padded_signal, Fs, 'half');
 
-    % compute DTW distances between Fourier transforms
-    [dist_no_padding, ~, ~] = dtw(Mx, Mx_half);
-    [dist_zero_padding, ~, ~] = dtw(Mx, Mx_padded);
+    % compute DTW distances and alignments
+    [dist_no_padding, ix_no_padding, iy_no_padding] = dtw(Mx, Mx_half);
+    [dist_zero_padding, ix_zero_padding, iy_zero_padding] = dtw(Mx, Mx_padded);
 
     % display DTW distances
     fprintf('DTW distance (no padding) for %s: %f\n', signal_name, dist_no_padding);
     fprintf('DTW distance (zero padding) for %s: %f\n', signal_name, dist_zero_padding);
+
+    % Plot DTW alignments
+    figure;
+    subplot(2,1,1);
+    plot_dtw_alignment(f, Mx, f_half, Mx_half, ix_no_padding, iy_no_padding, ...
+        sprintf('DTW Alignment (No Padding) for %s', signal_name));
+    subplot(2,1,2);
+    plot_dtw_alignment(f, Mx, f_padded, Mx_padded, ix_zero_padding, iy_zero_padding, ...
+        sprintf('DTW Alignment (Zero Padding) for %s', signal_name));
+end
+
+function plot_dtw_alignment(f1, Mx1, f2, Mx2, ix, iy, title_str)
+    % ensure indices are within valid range
+    ix = min(ix, length(Mx1));
+    iy = min(iy, length(Mx2));
+
+    % only keep elements up to the length of both magnitude spectra
+    aligned_Mx1 = Mx1(ix);
+    aligned_Mx2 = Mx2(iy);
+    aligned_f1 = f1(ix);
+    aligned_f2 = f2(iy);
+
+    % plot alignment
+    plot(aligned_f1, aligned_Mx1, 'b', 'LineWidth', 1.25);
+    hold on;
+    plot(aligned_f2, aligned_Mx2, 'r', 'LineWidth', 1.25);
+    legend('Original Magnitude Spectrum', 'Aligned Half-Length Spectrum');
+    title(title_str);
+    xlabel('Frequency (Hz)');
+    ylabel('Magnitude');
+    hold off;
 end
