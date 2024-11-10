@@ -1,109 +1,60 @@
-clc;
-clear;
-close all;
+function part_a
+    clc;
+    clear;
+    close all;
 
-% load data and get t vector
-load('BFVdata_assignment3.mat');
-N = length(BFVdu);
-t = (0:N-1)/BFV_Fs;
+    % load data and get t vector
+    load('BFVdata_assignment3.mat');
+    N = length(BFVdu);
+    t = (0:N-1)/BFV_Fs;
 
-% zero-center to modify signal
-modified_BFVdu = BFVdu - mean(BFVdu);
+    % zero-center to modify signal
+    modified_BFVdu = BFVdu - mean(BFVdu);
 
-% PART A1.1
-% plot raw signal with its magnitude spectrum
-[Mx_BFVdu, phx_BFVdu, f_BFVdu] = fourier_dt(BFVdu, BFV_Fs, 'half');
-figure;
-subplot(3,2,1);
-plot(t, BFVdu, 'LineWidth', 1.25);
-title('Time-Domain Signal: Full BFVdu');
-xlabel('Time (seconds)');
-ylabel('Blood Flow Velocity (m/s)');
-subplot(3,2,2);
-plot(f_BFVdu, Mx_BFVdu, 'LineWidth', 1.5);
-title('Magnitude Spectrum: Full BFVdu');
-xlabel('Frequency (Hz)');
-ylabel('Magnitude');
-xlim([0 10]);
+    % plot original signal and its magnitude spectrum
+    figure;
+    plot_signal_and_spectrum(t, BFVdu, BFV_Fs, 'Full BFVdu', 1);
+    plot_signal_and_spectrum(t(1:N/2), BFVdu(1:N/2), BFV_Fs, 'First Half of BFVdu', 3);
+    plot_padded_signal_and_spectrum(t, BFVdu, BFV_Fs, 'Padded BFVdu', 5);
 
-% PART A2.1
-% plot first half of signal with its magnitude spectrum
-half_BFVdu = BFVdu(1:N/2);
-[Mx_half_BFVdu, phx_half_BFVdu, f_half_BFVdu] = fourier_dt(half_BFVdu, BFV_Fs, 'half');
-subplot(3,2,3);
-plot(t(1:N/2), half_BFVdu, 'LineWidth', 1.25);
-title('Time-Domain Signal: Half 1 of BFVdu');
-xlabel('Time (seconds)');
-ylabel('Blood Flow Velocity (m/s)');
-subplot(3,2,4);
-plot(f_half_BFVdu, Mx_half_BFVdu, 'LineWidth', 1.5);
-title('Magnitude Spectrum: Half 1 of BFVdu');
-xlabel('Frequency (Hz)');
-ylabel('Magnitude');
-xlim([0 10]);
+    % plot modified signal and its magnitude spectrum
+    figure;
+    plot_signal_and_spectrum(t, modified_BFVdu, BFV_Fs, 'Modified BFVdu', 1);
+    plot_signal_and_spectrum(t(1:N/2), modified_BFVdu(1:N/2), BFV_Fs, 'First Half of Modified BFVdu', 3);
+    plot_padded_signal_and_spectrum(t, modified_BFVdu, BFV_Fs, 'Padded Modified BFVdu', 5);
+end
 
-% PART A3.1
-% plot first half of signal with zero-padding with its magnitude spectrum
-padded_BFVdu = [half_BFVdu; zeros(1, N/2)'];
-t_padded = (0:length(padded_BFVdu)-1) / BFV_Fs;
-[Mx_padded_BFVdu, phx_padded_BFVdu, f_padded_BFVdu] = fourier_dt(padded_BFVdu, BFV_Fs, 'half');
-subplot(3,2,5);
-plot(t_padded, padded_BFVdu, 'LineWidth', 1.25);
-title('Time-Domain Signal: Padded BFVdu');
-xlabel('Time (seconds)');
-ylabel('Blood Flow Velocity (m/s)');
-subplot(3,2,6);
-plot(f_padded_BFVdu, Mx_padded_BFVdu, 'LineWidth', 1.5);
-title('Magnitude Spectrum: Padded BFVdu');
-xlabel('Frequency (Hz)');
-ylabel('Magnitude');
-xlim([0 10]);
+function plot_signal_and_spectrum(t, signal, Fs, title_prefix, subplot_index)
+    N = length(signal);
+    [Mx, Phx, f] = fourier_dt(signal, Fs, 'half');
+    subplot(3,2,subplot_index);
+    plot(t, signal, 'LineWidth', 1.25);
+    title(['Time-Domain Signal: ', title_prefix]);
+    xlabel('Time (seconds)');
+    ylabel('Blood Flow Velocity (m/s)');
+    subplot(3,2,subplot_index+1);
+    plot(f, Mx, 'LineWidth', 1.5);
+    title(['Magnitude Spectrum: ', title_prefix]);
+    xlabel('Frequency (Hz)');
+    ylabel('Magnitude');
+    xlim([0 10]);
+end
 
-% PART A1.2
-% plot modified signal with its magnitude spectrum
-[Mx_mod_BFVdu, phx_mod_BFVdu, f_mod_BFVdu] = fourier_dt(modified_BFVdu, BFV_Fs, 'half');
-figure;
-subplot(3,2,1);
-plot(t, modified_BFVdu, 'LineWidth', 1.25);
-title('Time-Domain Signal: Modified BFVdu');
-xlabel('Time (seconds)');
-ylabel('Blood Flow Velocity (m/s)');
-subplot(3,2,2);
-plot(f_mod_BFVdu, Mx_mod_BFVdu, 'LineWidth', 1.5);
-title('Magnitude Spectrum: Modified BFVdu');
-xlabel('Frequency (Hz)');
-ylabel('Magnitude');
-xlim([0 10]);
-
-% PART A2.2
-% plot first half of modified signal with its magnitude spectrum
-half_mod_BFVdu = modified_BFVdu(1:N/2);
-[Mx_half_mod_BFVdu, phx_half_mod_BFVdu, f_half_mod_BFVdu] = fourier_dt(half_mod_BFVdu, BFV_Fs, 'half');
-subplot(3,2,3);
-plot(t(1:N/2), half_mod_BFVdu, 'LineWidth', 1.25);
-title('Time-Domain Signal: Half 1 of Modified BFVdu');
-xlabel('Time (seconds)');
-ylabel('Blood Flow Velocity (m/s)');
-subplot(3,2,4);
-plot(f_half_mod_BFVdu, Mx_half_mod_BFVdu, 'LineWidth', 1.5);
-title('Magnitude Spectrum: Half 1 of Modified BFVdu');
-xlabel('Frequency (Hz)');
-ylabel('Magnitude');
-xlim([0 10]);
-
-% PART A3.2
-% plot first half of modified signal with zero-padding with its magnitude spectrum
-padded_mod_BFVdu = [half_mod_BFVdu; zeros(1, N/2)'];
-t_padded_mod = (0:length(padded_mod_BFVdu)-1) / BFV_Fs;
-[Mx_padded_mod_BFVdu, phx_padded_mod_BFVdu, f_padded_mod_BFVdu] = fourier_dt(padded_mod_BFVdu, BFV_Fs, 'half');
-subplot(3,2,5);
-plot(t_padded_mod, padded_mod_BFVdu, 'LineWidth', 1.25);
-title('Time-Domain Signal: Padded Modified BFVdu');
-xlabel('Time (seconds)');
-ylabel('Blood Flow Velocity (m/s)');
-subplot(3,2,6);
-plot(f_padded_mod_BFVdu, Mx_padded_mod_BFVdu, 'LineWidth', 1.5);
-title('Magnitude Spectrum: Padded Modified BFVdu');
-xlabel('Frequency (Hz)');
-ylabel('Magnitude');
-xlim([0 10]);
+function plot_padded_signal_and_spectrum(t, signal, Fs, title_prefix, subplot_index)
+    N = length(signal);
+    half_signal = signal(1:N/2);
+    padded_signal = [half_signal; zeros(N/2, 1)];
+    t_padded = (0:length(padded_signal)-1) / Fs;
+    [Mx_padded, Phx_padded, f_padded] = fourier_dt(padded_signal, Fs, 'half');
+    subplot(3,2,subplot_index);
+    plot(t_padded, padded_signal, 'LineWidth', 1.25);
+    title(['Time-Domain Signal: ', title_prefix]);
+    xlabel('Time (seconds)');
+    ylabel('Blood Flow Velocity (m/s)');
+    subplot(3,2,subplot_index+1);
+    plot(f_padded, Mx_padded, 'LineWidth', 1.5);
+    title(['Magnitude Spectrum: ', title_prefix]);
+    xlabel('Frequency (Hz)');
+    ylabel('Magnitude');
+    xlim([0 10]);
+end
