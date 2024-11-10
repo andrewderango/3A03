@@ -22,11 +22,15 @@ function part_a
     plot_signal_and_spectrum(t, modified_BFVdu, BFV_Fs, 'Modified BFVdu', 1);
     plot_signal_and_spectrum(t(1:N/2), modified_BFVdu(1:N/2), BFV_Fs, 'First Half of Modified BFVdu', 3);
     plot_padded_signal_and_spectrum(t, modified_BFVdu, BFV_Fs, 'Padded Modified BFVdu', 5);
+
+    % Compare half plots with zero-padded plots using DTW
+    compare_with_dtw(BFVdu, BFV_Fs, 'Original Signal');
+    compare_with_dtw(modified_BFVdu, BFV_Fs, 'Modified Signal');
 end
 
 function plot_signal_and_spectrum(t, signal, Fs, title_prefix, subplot_index)
     N = length(signal);
-    [Mx, Phx, f] = fourier_dt(signal, Fs, 'half');
+    [Mx, ~, f] = fourier_dt(signal, Fs, 'half');
     subplot(3,2,subplot_index);
     plot(t, signal, 'LineWidth', 1.25);
     title(['Time-Domain Signal: ', title_prefix]);
@@ -45,7 +49,7 @@ function plot_padded_signal_and_spectrum(t, signal, Fs, title_prefix, subplot_in
     half_signal = signal(1:N/2);
     padded_signal = [half_signal; zeros(N/2, 1)];
     t_padded = (0:length(padded_signal)-1) / Fs;
-    [Mx_padded, Phx_padded, f_padded] = fourier_dt(padded_signal, Fs, 'half');
+    [Mx_padded, ~, f_padded] = fourier_dt(padded_signal, Fs, 'half');
     subplot(3,2,subplot_index);
     plot(t_padded, padded_signal, 'LineWidth', 1.25);
     title(['Time-Domain Signal: ', title_prefix]);
@@ -57,4 +61,18 @@ function plot_padded_signal_and_spectrum(t, signal, Fs, title_prefix, subplot_in
     xlabel('Frequency (Hz)');
     ylabel('Magnitude');
     xlim([0 10]);
+end
+
+function compare_with_dtw(signal, Fs, signal_name)
+    N = length(signal);
+    half_signal = signal(1:N/2);
+    padded_signal = [half_signal; zeros(N/2, 1)];
+
+    % compute DTW distances
+    [dist_no_padding, ~, ~] = dtw(signal, half_signal);
+    [dist_zero_padding, ~, ~] = dtw(signal, padded_signal);
+
+    % display DTW distances
+    fprintf('DTW distance (no padding) for %s: %f\n', signal_name, dist_no_padding);
+    fprintf('DTW distance (zero padding) for %s: %f\n', signal_name, dist_zero_padding);
 end
