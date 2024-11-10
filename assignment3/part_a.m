@@ -23,7 +23,7 @@ function part_a
     plot_signal_and_spectrum(t(1:N/2), modified_BFVdu(1:N/2), BFV_Fs, 'First Half of Modified BFVdu', 3);
     plot_padded_signal_and_spectrum(t, modified_BFVdu, BFV_Fs, 'Padded Modified BFVdu', 5);
 
-    % Compare half plots with zero-padded plots using DTW
+    % Compare Fourier transforms with zero-padded plots using DTW
     compare_with_dtw(BFVdu, BFV_Fs, 'Original Signal');
     compare_with_dtw(modified_BFVdu, BFV_Fs, 'Modified Signal');
 end
@@ -68,9 +68,14 @@ function compare_with_dtw(signal, Fs, signal_name)
     half_signal = signal(1:N/2);
     padded_signal = [half_signal; zeros(N/2, 1)];
 
-    % compute DTW distances
-    [dist_no_padding, ~, ~] = dtw(signal, half_signal);
-    [dist_zero_padding, ~, ~] = dtw(signal, padded_signal);
+    % compute Fourier transforms
+    [Mx, ~, ~] = fourier_dt(signal, Fs, 'half');
+    [Mx_half, ~, ~] = fourier_dt(half_signal, Fs, 'half');
+    [Mx_padded, ~, ~] = fourier_dt(padded_signal, Fs, 'half');
+
+    % compute DTW distances between Fourier transforms
+    [dist_no_padding, ~, ~] = dtw(Mx, Mx_half);
+    [dist_zero_padding, ~, ~] = dtw(Mx, Mx_padded);
 
     % display DTW distances
     fprintf('DTW distance (no padding) for %s: %f\n', signal_name, dist_no_padding);
