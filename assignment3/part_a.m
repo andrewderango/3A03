@@ -1,8 +1,4 @@
 function part_a
-    clc;
-    clear;
-    close all;
-
     % load data and get t vector
     load('BFVdata_assignment3.mat');
     N = length(BFVdu);
