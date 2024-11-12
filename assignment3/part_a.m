@@ -46,6 +46,7 @@ function plot_padded_signal_and_spectrum(t, signal, Fs, title_prefix, subplot_in
     padded_signal = [half_signal; zeros(N/2, 1)];
     t_padded = (0:length(padded_signal)-1) / Fs;
     [Mx_padded, ~, f_padded] = fourier_dt(padded_signal, Fs, 'half');
+    Mx_padded = Mx_padded * 2;
     subplot(3,2,subplot_index);
     plot(t_padded, padded_signal, 'LineWidth', 1.25);
     title(['Time-Domain Signal: ', title_prefix]);
@@ -68,6 +69,7 @@ function compare_with_dtw(signal, Fs, signal_name)
     [Mx, ~, f] = fourier_dt(signal, Fs, 'half');
     [Mx_half, ~, f_half] = fourier_dt(half_signal, Fs, 'half');
     [Mx_padded, ~, f_padded] = fourier_dt(padded_signal, Fs, 'half');
+    Mx_padded = Mx_padded * 2;
 
     % compute DTW distances and alignments
     [dist_no_padding, ix_no_padding, iy_no_padding] = dtw(Mx, Mx_half);
