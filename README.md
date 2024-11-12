@@ -1,5 +1,7 @@
 # 3A03
 
+This repository contains assignments for the course IBEHS 3A03: Biomedical Signals and Systems in Fall 2024. The assignments involve implementing and analyzing various discrete-time systems and signal processing techniques under biomedical applications.
+
 ## IBEHS 3A03 - Biomedical Systems and Signals
 
 ### Project Team:
