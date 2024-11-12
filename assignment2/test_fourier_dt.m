@@ -1,8 +1,8 @@
-Fs = 8e3; % Sampling frequency in Hz
-N = 1000; % Number of samples for signal x
+Fs = 10e3; % Sampling frequency in Hz
+N = 800; % Number of samples for signal x
 % N = 1001; % Number of samples for signal x
 
-F0 = 3e3; % Sinuosoid frequency  in Hz
+F0 = 2e3; % Sinuosoid frequency  in Hz
 % F0 = 3.001e3; % Sinuosoid frequency  in Hz
 A0 = 1;   % Amplitude of sinusoid
 t = (0:N-1)/Fs; % Time array
