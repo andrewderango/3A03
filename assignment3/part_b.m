@@ -1,6 +1,6 @@
 function part_b(verbose)
 
-    %load data
+    % load data
     data = load('EEGdata_assignment3.mat');
 
     EEG1 = data.EEG1;
@@ -8,7 +8,7 @@ function part_b(verbose)
 
     EEG_Fs = data.EEG_Fs;
 
-    %Calculate the first fourier transform
+    % Calculate the first fourier transform
     [Mx1,~,f1] = fourier_dt(EEG1, EEG_Fs, 'half');
 
     figure;
@@ -169,83 +169,81 @@ function part_b(verbose)
     disp(' ');
    
     %Optional plotting for each signal band power
-    if (verbose == 'true')
+    if strcmp(verbose, 'true')
         
         figure;
+        % Plotting for EEG1
+        subplot(5, 1, 1);
+        plot(f1, Mx1, 'LineWidth', 1.5);
+        xlim([0 3]);
+        title('EEG1 - Delta Band (0-3 Hz)');
+        xlabel('Frequency (Hz)');
+        ylabel('Magnitude');
 
+        subplot(5, 1, 2);
+        plot(f1, Mx1, 'LineWidth', 1.5);
+        xlim([3 8]);
+        title('EEG1 - Theta Band (3-8 Hz)');
+        xlabel('Frequency (Hz)');
+        ylabel('Magnitude');
+
+        subplot(5, 1, 3);
+        plot(f1, Mx1, 'LineWidth', 1.5);
+        xlim([8 13]);
+        title('EEG1 - Alpha Band (8-13 Hz)');
+        xlabel('Frequency (Hz)');
+        ylabel('Magnitude');
+
+        subplot(5, 1, 4);
+        plot(f1, Mx1, 'LineWidth', 1.5);
+        xlim([13 25]);
+        title('EEG1 - Beta Band (13-25 Hz)');
+        xlabel('Frequency (Hz)');
+        ylabel('Magnitude');
+
+        subplot(5, 1, 5);
+        plot(f1, Mx1, 'LineWidth', 1.5);
+        xlim([25 100]);
+        title('EEG1 - Gamma Band (25-100 Hz)');
+        xlabel('Frequency (Hz)');
+        ylabel('Magnitude');
+
+        % Plotting for EEG2
+        figure;
+        subplot(5, 1, 1);
+        plot(f2, Mx2, 'LineWidth', 1.5);
+        xlim([0 3]);
+        title('EEG2 - Delta Band (0-3 Hz)');
+        xlabel('Frequency (Hz)');
+        ylabel('Magnitude');
+
+        subplot(5, 1, 2);
+        plot(f2, Mx2, 'LineWidth', 1.5);
+        xlim([3 8]);
+        title('EEG2 - Theta Band (3-8 Hz)');
+        xlabel('Frequency (Hz)');
+        ylabel('Magnitude');
+
+        subplot(5, 1, 3);
+        plot(f2, Mx2, 'LineWidth', 1.5);
+        xlim([8 13]);
+        title('EEG2 - Alpha Band (8-13 Hz)');
+        xlabel('Frequency (Hz)');
+        ylabel('Magnitude');
+
+        subplot(5, 1, 4);
+        plot(f2, Mx2, 'LineWidth', 1.5);
+        xlim([13 25]);
+        title('EEG2 - Beta Band (13-25 Hz)');
+        xlabel('Frequency (Hz)');
+        ylabel('Magnitude');
+
+        subplot(5, 1, 5);
+        plot(f2, Mx2, 'LineWidth', 1.5);
+        xlim([25 100]);
+        title('EEG2 - Gamma Band (25-100 Hz)');
+        xlabel('Frequency (Hz)');
+        ylabel('Magnitude');
 
     end
-    % Plotting for EEG1
-    figure;
-    subplot(5, 1, 1);
-    plot(f1, Mx1, 'LineWidth', 1.5);
-    xlim([0 3]);
-    title('EEG1 - Delta Band (0-3 Hz)');
-    xlabel('Frequency (Hz)');
-    ylabel('Magnitude');
-
-    subplot(5, 1, 2);
-    plot(f1, Mx1, 'LineWidth', 1.5);
-    xlim([3 8]);
-    title('EEG1 - Theta Band (3-8 Hz)');
-    xlabel('Frequency (Hz)');
-    ylabel('Magnitude');
-
-    subplot(5, 1, 3);
-    plot(f1, Mx1, 'LineWidth', 1.5);
-    xlim([8 13]);
-    title('EEG1 - Alpha Band (8-13 Hz)');
-    xlabel('Frequency (Hz)');
-    ylabel('Magnitude');
-
-    subplot(5, 1, 4);
-    plot(f1, Mx1, 'LineWidth', 1.5);
-    xlim([13 25]);
-    title('EEG1 - Beta Band (13-25 Hz)');
-    xlabel('Frequency (Hz)');
-    ylabel('Magnitude');
-
-    subplot(5, 1, 5);
-    plot(f1, Mx1, 'LineWidth', 1.5);
-    xlim([25 100]);
-    title('EEG1 - Gamma Band (25-100 Hz)');
-    xlabel('Frequency (Hz)');
-    ylabel('Magnitude');
-
-    % Plotting for EEG2
-    figure;
-    subplot(5, 1, 1);
-    plot(f2, Mx2, 'LineWidth', 1.5);
-    xlim([0 3]);
-    title('EEG2 - Delta Band (0-3 Hz)');
-    xlabel('Frequency (Hz)');
-    ylabel('Magnitude');
-
-    subplot(5, 1, 2);
-    plot(f2, Mx2, 'LineWidth', 1.5);
-    xlim([3 8]);
-    title('EEG2 - Theta Band (3-8 Hz)');
-    xlabel('Frequency (Hz)');
-    ylabel('Magnitude');
-
-    subplot(5, 1, 3);
-    plot(f2, Mx2, 'LineWidth', 1.5);
-    xlim([8 13]);
-    title('EEG2 - Alpha Band (8-13 Hz)');
-    xlabel('Frequency (Hz)');
-    ylabel('Magnitude');
-
-    subplot(5, 1, 4);
-    plot(f2, Mx2, 'LineWidth', 1.5);
-    xlim([13 25]);
-    title('EEG2 - Beta Band (13-25 Hz)');
-    xlabel('Frequency (Hz)');
-    ylabel('Magnitude');
-
-    subplot(5, 1, 5);
-    plot(f2, Mx2, 'LineWidth', 1.5);
-    xlim([25 100]);
-    title('EEG2 - Gamma Band (25-100 Hz)');
-    xlabel('Frequency (Hz)');
-    ylabel('Magnitude');
 end

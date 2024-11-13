@@ -2,6 +2,6 @@ clc;
 clear;
 close all;
 
-part_a;
+%part_a;
 
-part_b;
+part_b('true');
