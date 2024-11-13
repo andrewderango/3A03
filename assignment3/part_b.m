@@ -23,6 +23,8 @@ function part_b
 
     disp("EEG 1 - Band Power");
 
+    disp(' ');
+
     %Delta band
     band_power_delta = sum(Mx1(f1 >= 0 & f1 < 3));
 
@@ -31,6 +33,8 @@ function part_b
     disp(['Delta: ', num2str(band_power_delta)]);
 
     disp(['Delta Normalized: ', num2str(band_power_delta_normalized)]);
+
+    disp(' ');
 
     %Theta band
     band_power_theta = sum(Mx1(f1 >= 3 & f1 < 8));
@@ -41,6 +45,8 @@ function part_b
 
     disp(['Theta Normalized: ', num2str(band_power_theta_normalized)]);
 
+    disp(' ');
+
     %Alpha band
     band_power_alpha = sum(Mx1(f1 >= 8 & f1 < 13));
 
@@ -49,6 +55,8 @@ function part_b
     disp(['Alpha: ', num2str(band_power_alpha)]);
 
     disp(['Alpha Normalized: ', num2str(band_power_alpha_normalized)]);
+
+    disp(' ');
 
     %Beta band
     band_power_beta = sum(Mx1(f1 >= 13 & f1 < 25));
@@ -59,6 +67,8 @@ function part_b
 
     disp(['Beta Normalized: ', num2str(band_power_beta_normalized)]);
 
+    disp(' ');
+
     %Gamma band
     band_power_gamma = sum(Mx1(f1 >= 25 & f1 <= 100));
 
@@ -67,6 +77,8 @@ function part_b
     disp(['Gamma: ', num2str(band_power_gamma)]);
 
     disp(['Gamma Normalized: ', num2str(band_power_gamma_normalized)]);
+
+    disp(' ');
 
     %Calculate the second fourier transform
 
@@ -82,8 +94,9 @@ function part_b
     %manually restrict the x-axis to 0-50 Hz
     xlim([0 50]);
 
-    disp(' ');
     disp("EEG 2 - Band Power");
+
+    disp(' ');
 
     %Delta band
     band_power_delta = sum(Mx2(f2 >= 0 & f2 < 3));
@@ -94,6 +107,8 @@ function part_b
 
     disp(['Delta Normalized: ', num2str(band_power_delta_normalized)]);
 
+    disp(' ');
+
     %Theta band
     band_power_theta = sum(Mx2(f2 >= 3 & f2 < 8));
 
@@ -102,6 +117,8 @@ function part_b
     disp(['Theta: ', num2str(band_power_theta)]);
 
     disp(['Theta Normalized: ', num2str(band_power_theta_normalized)]);
+
+    disp(' ');
 
     %Alpha band
     band_power_alpha = sum(Mx2(f2 >= 8 & f2 < 13));
@@ -112,6 +129,8 @@ function part_b
 
     disp(['Alpha Normalized: ', num2str(band_power_alpha_normalized)]);
 
+    disp(' ');
+
     %Beta band
     band_power_beta = sum(Mx2(f2 >= 13 & f2 < 25));
 
@@ -121,6 +140,8 @@ function part_b
 
     disp(['Beta Normalized: ', num2str(band_power_beta_normalized)]);
 
+    disp(' ');
+
     %Gamma band
     band_power_gamma = sum(Mx2(f2 >= 25 & f2 <= 100));
 
@@ -129,5 +150,7 @@ function part_b
     disp(['Gamma: ', num2str(band_power_gamma)]);
 
     disp(['Gamma Normalized: ', num2str(band_power_gamma_normalized)]);
+
+    disp(' ');
     
 end
