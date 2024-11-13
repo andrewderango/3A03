@@ -7,6 +7,20 @@ function part_b(verbose)
     EEG2 = data.EEG2;
 
     EEG_Fs = data.EEG_Fs;
+    
+    % Plot signals in the time domain
+    t = linspace(0, length(EEG1)/EEG_Fs, length(EEG1));
+    figure;
+    subplot(2, 1, 1);
+    plot(t, EEG1, 'LineWidth', 1.5);
+    title('EEG1 Time-Domain Signal');
+    xlabel('Time (s)');
+    ylabel('Voltage (μV)');
+    subplot(2, 1, 2);
+    plot(t, EEG2, 'LineWidth', 1.5);
+    title('EEG2 Time-Domain Signal');
+    xlabel('Time (s)');
+    ylabel('Voltage (μV)');
 
     % Calculate the first fourier transform
     [Mx1,~,f1] = fourier_dt(EEG1, EEG_Fs, 'half');
