@@ -11,15 +11,22 @@ function part_b
     %Calculate the first fourier transform
     [Mx1,~,f1] = fourier_dt(EEG1, EEG_Fs, 'half');
 
-    % Plot the magnitude spectrum of EEG1
     figure;
+    
+    % First subplot with xlim 0-50 Hz
+    subplot(2, 1, 1);
     plot(f1, Mx1, 'LineWidth', 1.5);
-    title('Magnitude Spectrum of EEG1');
+    title('Magnitude Spectrum of EEG1 (0-50 Hz)');
     xlabel('Frequency (Hz)');
     ylabel('Magnitude');
-    
-    %manually restrict the x-axis to 0-50 Hz
     xlim([0 50]);
+    
+    % Second subplot with no xlim
+    subplot(2, 1, 2);
+    plot(f1, Mx1, 'LineWidth', 1.5);
+    title('Magnitude Spectrum of EEG1 (Full Range)');
+    xlabel('Frequency (Hz)');
+    ylabel('Magnitude');
 
     disp("EEG 1 - Band Power");
 
@@ -86,13 +93,21 @@ function part_b
 
     % Plot the magnitude spectrum of EEG2
     figure;
+    
+    % First subplot with xlim 0-50 Hz
+    subplot(2, 1, 1);
     plot(f2, Mx2, 'LineWidth', 1.5);
-    title('Magnitude Spectrum of EEG2');
+    title('Magnitude Spectrum of EEG1 (0-50 Hz)');
     xlabel('Frequency (Hz)');
     ylabel('Magnitude');
-
-    %manually restrict the x-axis to 0-50 Hz
     xlim([0 50]);
+    
+    % Second subplot with no xlim
+    subplot(2, 1, 2);
+    plot(f2, Mx2, 'LineWidth', 1.5);
+    title('Magnitude Spectrum of EEG1 (Full Range)');
+    xlabel('Frequency (Hz)');
+    ylabel('Magnitude');
 
     disp("EEG 2 - Band Power");
 
