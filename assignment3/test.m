@@ -3,7 +3,8 @@ load('EEGdata_assignment3.mat');
 [Mx2,~,f2] = fourier_dt(EEG1, EEG_Fs, 'full'); % note I took in lecture said that it had to be the full spectrum not half
 
 disp(mean(EEG1.^2)); % way they say to do it in the slides Week 7 Slide 42
-disp(sum(Mx1.^2));
+disp(sum(Mx1.^2)); % wrong
+disp(sum((Mx1./2).^2)*2); % this way also works
 disp(sum(Mx2.^2)); % way they say to do it in the slides Week 7 Slide 42
-disp(sum(Mx1));
-disp(sum(Mx2));
+disp(sum(Mx1)); % wrong
+disp(sum(Mx2)); % wrong
