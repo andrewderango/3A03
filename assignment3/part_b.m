@@ -9,7 +9,7 @@ function part_b(verbose)
     EEG_Fs = data.EEG_Fs;
     
     % Plot signals in the time domain
-    t = linspace(0, length(EEG1)/EEG_Fs, length(EEG1));
+    t = linspace(0, (length(EEG1)-1)/EEG_Fs, length(EEG1));
     figure;
     subplot(2, 1, 1);
     plot(t, EEG1, 'LineWidth', 1.5);
