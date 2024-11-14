@@ -9,7 +9,7 @@ function part_b(verbose)
     EEG_Fs = data.EEG_Fs;
 
     % Calculate the first fourier transform
-    [Mx1,~,f1] = fourier_dt(EEG1, EEG_Fs, 'half');
+    [Mx1,~,f1] = fourier_dt(EEG1, EEG_Fs, 'full');
 
     figure;
     
@@ -89,7 +89,7 @@ function part_b(verbose)
 
     %Calculate the second fourier transform
 
-    [Mx2,~,f2] = fourier_dt(EEG2, EEG_Fs, 'half');
+    [Mx2,~,f2] = fourier_dt(EEG2, EEG_Fs, 'full');
 
     % Plot the magnitude spectrum of EEG2
     figure;
