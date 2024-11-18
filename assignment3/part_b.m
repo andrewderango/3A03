@@ -212,15 +212,17 @@ function part_b(verbose)
     ylim([1e-3 max(EEG2_normalized_band_powers) * 1.2]); % Add some space above the max value
 
     %Plot the time domain signal
+    t = linspace(0, (length(EEG1)-1)/EEG_Fs, length(EEG1));
+    
     figure;
     subplot(2, 1, 1);
-    plot(1:length(EEG1), EEG1, 'LineWidth', 1.5);
+    plot(t, EEG1, 'LineWidth', 1.5);
     title('EEG1 Time Domain Signal');
     xlabel('Time (s)');
     ylabel('Voltage (μV)');
     
     subplot(2, 1, 2);
-    plot(1:length(EEG2), EEG2, 'LineWidth', 1.5);
+    plot(t, EEG2, 'LineWidth', 1.5);
     title('EEG2 Time Domain Signal');
     xlabel('Time (s)');
     ylabel('Voltage (μV)');
