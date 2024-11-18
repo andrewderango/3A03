@@ -89,14 +89,8 @@ function compare_with_dtw(signal, Fs, signal_name)
     [dist_zero_padding, ix_zero_padding, iy_zero_padding] = dtw(Mx, Mx_padded);
 
     % display DTW distances
-    % write to file to save results for comparison without running the script again, for future reference
-    if strcmp(signal_name, 'Original Signal')
-        fileID = fopen('part1_comps.txt', 'w');
-    else
-        fileID = fopen('part1_comps.txt', 'a');
-    end
-    fprintf(fileID, 'DTW distance (no padding) for %s: %f\n', signal_name, dist_no_padding);
-    fprintf(fileID, 'DTW distance (zero padding) for %s: %f\n', signal_name, dist_zero_padding);
+    printf('DTW distance (no padding) for %s: %f\n', signal_name, dist_no_padding);
+    printf('DTW distance (zero padding) for %s: %f\n', signal_name, dist_zero_padding);
     fclose(fileID);
     disp(['DTW distance (no padding) for ', signal_name, ': ', num2str(dist_no_padding)]);
     disp(['DTW distance (zero padding) for ', signal_name, ': ', num2str(dist_zero_padding)]);
