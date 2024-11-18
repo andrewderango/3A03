@@ -24,9 +24,14 @@ function part_a
     compare_with_dtw(modified_BFVdu, BFV_Fs, 'Modified Signal');
 end
 
+% Function to compute and plot the Fourier transform of a discrete-time signal
 function plot_signal_and_spectrum(t, signal, Fs, title_prefix, subplot_index)
+
+    % compute Fourier transform of signal
     N = length(signal);
     [Mx, ~, f] = fourier_dt(signal, Fs, 'half');
+
+    % plot signal and its magnitude spectrum
     subplot(3,2,subplot_index);
     plot(t, signal, 'LineWidth', 1.25);
     title(['Time-Domain Signal: ', title_prefix]);
@@ -40,13 +45,20 @@ function plot_signal_and_spectrum(t, signal, Fs, title_prefix, subplot_index)
     xlim([0 10]);
 end
 
+% Function to compute the padded Fourier transform of a discrete-time signal
 function plot_padded_signal_and_spectrum(t, signal, Fs, title_prefix, subplot_index)
+    
+    % zero-pad signal
     N = length(signal);
     half_signal = signal(1:N/2);
     padded_signal = [half_signal; zeros(N/2, 1)];
     t_padded = (0:length(padded_signal)-1) / Fs;
+
+    % compute Fourier transform of padded signal
     [Mx_padded, ~, f_padded] = fourier_dt(padded_signal, Fs, 'half');
-    Mx_padded = Mx_padded * 2;
+    Mx_padded = Mx_padded * 2; % scale by 2 to account for zero-padding
+
+    % plot padded signal and its magnitude spectrum
     subplot(3,2,subplot_index);
     plot(t_padded, padded_signal, 'LineWidth', 1.25);
     title(['Time-Domain Signal: ', title_prefix]);
@@ -60,6 +72,7 @@ function plot_padded_signal_and_spectrum(t, signal, Fs, title_prefix, subplot_in
     xlim([0 10]);
 end
 
+% Function to compare two signals using dynamic time warping (DTW)
 function compare_with_dtw(signal, Fs, signal_name)
     N = length(signal);
     half_signal = signal(1:N/2);
@@ -76,6 +89,7 @@ function compare_with_dtw(signal, Fs, signal_name)
     [dist_zero_padding, ix_zero_padding, iy_zero_padding] = dtw(Mx, Mx_padded);
 
     % display DTW distances
+    % write to file to save results for comparison without running the script again, for future reference
     if strcmp(signal_name, 'Original Signal')
         fileID = fopen('part1_comps.txt', 'w');
     else
@@ -95,6 +109,7 @@ function compare_with_dtw(signal, Fs, signal_name)
     plot_dtw_alignment(f, Mx, f_padded, Mx_padded, ix_zero_padding, iy_zero_padding, sprintf('DTW Alignment (Zero Padding) for %s', signal_name));
 end
 
+% Function to plot the alignment of two magnitude spectra using DTW
 function plot_dtw_alignment(f1, Mx1, f2, Mx2, ix, iy, title_str)
     % ensure indices are within valid range
     ix = min(ix, length(Mx1));
