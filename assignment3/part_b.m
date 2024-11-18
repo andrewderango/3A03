@@ -97,7 +97,7 @@ function part_b(verbose)
     % First subplot with xlim 0-50 Hz
     subplot(2, 1, 1);
     plot(f2, Mx2, 'LineWidth', 1.5);
-    title('Magnitude Spectrum of EEG1 (0-50 Hz)');
+    title('Magnitude Spectrum of EEG2 (0-50 Hz)');
     xlabel('Frequency (Hz)');
     ylabel('Magnitude');
     xlim([0 50]);
@@ -105,7 +105,7 @@ function part_b(verbose)
     % Second subplot with no xlim
     subplot(2, 1, 2);
     plot(f2, Mx2, 'LineWidth', 1.5);
-    title('Magnitude Spectrum of EEG1 (Full Range)');
+    title('Magnitude Spectrum of EEG2 (Full Range)');
     xlabel('Frequency (Hz)');
     ylabel('Magnitude');
 
