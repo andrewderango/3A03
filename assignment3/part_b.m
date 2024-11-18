@@ -210,9 +210,6 @@ function part_b(verbose)
     xlabel('Band');
     ylabel('Power');
     ylim([1e-3 max(EEG2_normalized_band_powers) * 1.2]); % Add some space above the max value
-
-    
-
    
     %Optional plotting for each signal band power
     if strcmp(verbose, 'true')
