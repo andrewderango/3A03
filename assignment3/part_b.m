@@ -210,6 +210,22 @@ function part_b(verbose)
     xlabel('Band');
     ylabel('Power');
     ylim([1e-3 max(EEG2_normalized_band_powers) * 1.2]); % Add some space above the max value
+
+    %Plot the time domain signal
+    figure;
+    subplot(2, 1, 1);
+    plot(1:length(EEG1), EEG1, 'LineWidth', 1.5);
+    title('EEG1 Time Domain Signal');
+    xlabel('Time (s)');
+    ylabel('Amplitude');
+    
+    subplot(2, 1, 2);
+    plot(1:length(EEG2), EEG2, 'LineWidth', 1.5);
+    title('EEG2 Time Domain Signal');
+    xlabel('Time (s)');
+    ylabel('Amplitude');
+    
+
    
     %Optional plotting for each signal band power
     if strcmp(verbose, 'true')
