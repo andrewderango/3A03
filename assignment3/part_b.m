@@ -10,7 +10,7 @@ function part_b(verbose)
 
     % Calculate the first fourier transform
     [Mx1,~,f1] = fourier_dt(EEG1, EEG_Fs, 'full');
-
+    
     figure;
     
     % First subplot with xlim 0-50 Hz
@@ -217,13 +217,13 @@ function part_b(verbose)
     plot(1:length(EEG1), EEG1, 'LineWidth', 1.5);
     title('EEG1 Time Domain Signal');
     xlabel('Time (s)');
-    ylabel('Amplitude');
+    ylabel('Voltage (μV)');
     
     subplot(2, 1, 2);
     plot(1:length(EEG2), EEG2, 'LineWidth', 1.5);
     title('EEG2 Time Domain Signal');
     xlabel('Time (s)');
-    ylabel('Amplitude');
+    ylabel('Voltage (μV)');
     
 
    
