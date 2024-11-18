@@ -116,55 +116,55 @@ function part_b(verbose)
     %Delta band
     band_power_delta2 = sum(Mx2(f2 >= 0 & f2 < 3).^2)*2;
 
-    band_power_delta_normalized = band_power_delta2 / (3 - 0);
+    band_power_delta_normalized2 = band_power_delta2 / (3 - 0);
 
     disp(['Delta: ', num2str(band_power_delta2)]);
 
-    disp(['Delta Normalized: ', num2str(band_power_delta_normalized)]);
+    disp(['Delta Normalized: ', num2str(band_power_delta_normalized2)]);
 
     disp(' ');
 
     %Theta band
     band_power_theta2 = sum(Mx2(f2 >= 3 & f2 < 8).^2)*2;
 
-    band_power_theta_normalized = band_power_theta2 / (5 - 3);
+    band_power_theta_normalized2 = band_power_theta2 / (5 - 3);
 
     disp(['Theta: ', num2str(band_power_theta2)]);
 
-    disp(['Theta Normalized: ', num2str(band_power_theta_normalized)]);
+    disp(['Theta Normalized: ', num2str(band_power_theta_normalized2)]);
 
     disp(' ');
 
     %Alpha band
     band_power_alpha2 = sum(Mx2(f2 >= 8 & f2 < 13).^2)*2;
 
-    band_power_alpha_normalized = band_power_alpha2 / (13 - 8);
+    band_power_alpha_normalized2 = band_power_alpha2 / (13 - 8);
 
     disp(['Alpha: ', num2str(band_power_alpha2)]);
 
-    disp(['Alpha Normalized: ', num2str(band_power_alpha_normalized)]);
+    disp(['Alpha Normalized: ', num2str(band_power_alpha_normalized2)]);
 
     disp(' ');
 
     %Beta band
     band_power_beta2 = sum(Mx2(f2 >= 13 & f2 < 25).^2)*2;
 
-    band_power_beta_normalized = band_power_beta2 / (25 - 13);
+    band_power_beta_normalized2 = band_power_beta2 / (25 - 13);
 
     disp(['Beta: ', num2str(band_power_beta2)]);
 
-    disp(['Beta Normalized: ', num2str(band_power_beta_normalized)]);
+    disp(['Beta Normalized: ', num2str(band_power_beta_normalized2)]);
 
     disp(' ');
 
     %Gamma band
     band_power_gamma2 = sum(Mx2(f2 >= 25 & f2 <= 100).^2)*2;
 
-    band_power_gamma_normalized = band_power_gamma2 / (100 - 25);
+    band_power_gamma_normalized2 = band_power_gamma2 / (100 - 25);
 
     disp(['Gamma: ', num2str(band_power_gamma2)]);
 
-    disp(['Gamma Normalized: ', num2str(band_power_gamma_normalized)]);
+    disp(['Gamma Normalized: ', num2str(band_power_gamma_normalized2)]);
 
     disp(' ');
 
@@ -190,6 +190,29 @@ function part_b(verbose)
     xlabel('Band');
     ylabel('Power');
     ylim([1e-3 max(EEG2_band_powers) * 1.2]); % Add some space above the max value
+
+    %Normalized Band Powers
+
+    EEG1_normalized_band_powers = [band_power_delta_normalized, band_power_theta_normalized, band_power_alpha_normalized, band_power_beta_normalized, band_power_gamma_normalized];
+    subplot(1, 2, 1);
+    bar(1:5, EEG1_normalized_band_powers, 'FaceColor', [0.2, 0.6, 0.8]);
+    set(gca, 'XTickLabel', band_labels, 'XTick', 1:5, 'YScale', 'log');
+    title('EEG1 Normalized Band Powers');
+    xlabel('Band');
+    ylabel('Power');
+    ylim([1e-3 max(EEG1_normalized_band_powers) * 1.2]);
+
+    EEG2_normalized_band_powers = [band_power_delta_normalized2, band_power_theta_normalized2, band_power_alpha_normalized2, band_power_beta_normalized2, band_power_gamma_normalized2];
+    subplot(1, 2, 2);
+    bar(1:5, EEG2_normalized_band_powers, 'FaceColor', [0.8, 0.4, 0.4]);
+    set(gca, 'XTickLabel', band_labels, 'XTick', 1:5, 'YScale', 'log');
+    title('EEG2 Normalized Band Powers');
+    xlabel('Band');
+    ylabel('Power');
+    ylim([1e-3 max(EEG2_normalized_band_powers) * 1.2]); % Add some space above the max value
+
+    
+
    
     %Optional plotting for each signal band power
     if strcmp(verbose, 'true')
