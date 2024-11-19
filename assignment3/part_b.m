@@ -10,7 +10,7 @@ function part_b(verbose)
 
     % Calculate the first fourier transform
     [Mx1,~,f1] = fourier_dt(EEG1, EEG_Fs, 'full');
-
+    
     figure;
     
     % First subplot with xlim 0-50 Hz
@@ -212,18 +212,28 @@ function part_b(verbose)
     ylim([1e-3 max(EEG2_normalized_band_powers) * 1.2]); % Add some space above the max value
 
     %Plot the time domain signal
+    t = linspace(0, (length(EEG1)-1)/EEG_Fs, length(EEG1));
+    
     figure;
     subplot(2, 1, 1);
-    plot(1:length(EEG1), EEG1, 'LineWidth', 1.5);
+    plot(t, EEG1, 'LineWidth', 1.5);
     title('EEG1 Time Domain Signal');
     xlabel('Time (s)');
+<<<<<<< HEAD
     ylabel('Voltage (microV)');
+=======
+    ylabel('Voltage (μV)');
+>>>>>>> 4386241f0cf6f6c1a1fd504d40fd4d47a9cf9fe8
     
     subplot(2, 1, 2);
-    plot(1:length(EEG2), EEG2, 'LineWidth', 1.5);
+    plot(t, EEG2, 'LineWidth', 1.5);
     title('EEG2 Time Domain Signal');
     xlabel('Time (s)');
+<<<<<<< HEAD
     ylabel('Voltage (microV)');
+=======
+    ylabel('Voltage (μV)');
+>>>>>>> 4386241f0cf6f6c1a1fd504d40fd4d47a9cf9fe8
     
 
    
