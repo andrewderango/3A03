@@ -18,3 +18,11 @@ plot(f_EEGa4, Mx_EEGa4);
 title('Magnitude Spectrum of EEGa4 Signal');
 xlabel('Frequency (Hz)');
 ylabel('Magnitude');
+
+
+figure;
+plot(f_EEGa4, phx_EEGa4);
+title('Phase Spectrum of EEGa4 Signal');
+xlabel('Frequency (Hz)');
+ylabel('Phase (radians)');
+
