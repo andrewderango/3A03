@@ -46,7 +46,7 @@ function part_b(verbose)
     %Theta band
     band_power_theta = sum(Mx1(f1 >= 3 & f1 < 8).^2)*2;
 
-    band_power_theta_normalized = band_power_theta / (5 - 3);
+    band_power_theta_normalized = band_power_theta / (8 - 3);
 
     disp(['Theta: ', num2str(band_power_theta)]);
 
@@ -127,7 +127,7 @@ function part_b(verbose)
     %Theta band
     band_power_theta2 = sum(Mx2(f2 >= 3 & f2 < 8).^2)*2;
 
-    band_power_theta_normalized2 = band_power_theta2 / (5 - 3);
+    band_power_theta_normalized2 = band_power_theta2 / (8 - 3);
 
     disp(['Theta: ', num2str(band_power_theta2)]);
 
@@ -219,13 +219,21 @@ function part_b(verbose)
     plot(t, EEG1, 'LineWidth', 1.5);
     title('EEG1 Time Domain Signal');
     xlabel('Time (s)');
+<<<<<<< HEAD
+    ylabel('Voltage (microV)');
+=======
     ylabel('Voltage (μV)');
+>>>>>>> 4386241f0cf6f6c1a1fd504d40fd4d47a9cf9fe8
     
     subplot(2, 1, 2);
     plot(t, EEG2, 'LineWidth', 1.5);
     title('EEG2 Time Domain Signal');
     xlabel('Time (s)');
+<<<<<<< HEAD
+    ylabel('Voltage (microV)');
+=======
     ylabel('Voltage (μV)');
+>>>>>>> 4386241f0cf6f6c1a1fd504d40fd4d47a9cf9fe8
     
 
    
