@@ -23,4 +23,9 @@ plot_all(VGRF_file.VGRF, VGRF_file.VGRF_Fs,'VGRF', 'Force (N)', VGRF_filter_IIR.
 
 % BFVdu Signal
 
-% same stuff as above can be copied down here with different names etc.
+BFVdu_file = load('BFVdata_assignment4.mat');
+BFVdu_filter_FIR = load('testFilter.mat');
+BFVdu_filter_IIR = load('testFilter.mat');
+
+plot_all(BFVdu_file.BFVdu, BFVdu_file.BFV_Fs,'BFVdu', 'Blood Flow Velocity (m/s)', BFVdu_filter_FIR.testFilter, 'FIR Bandpass Filter');
+plot_all(BFVdu_file.BFVdu, BFVdu_file.BFV_Fs,'BFVdu', 'Blood Flow Velocity (m/s)', BFVdu_filter_IIR.testFilter, 'IIR Bandpass Filter');
