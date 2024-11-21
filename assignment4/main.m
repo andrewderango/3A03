@@ -5,7 +5,7 @@ close all;
 
 % EEG Signal
 
-EEG_file = load('Assignment 4 EEG Data.mat');
+EEG_file = load('EEGdata_assignment4.mat');
 EEG_filter_FIR = load('testFilter.mat');
 EEG_filter_IIR = load('testFilter.mat');
 
@@ -14,7 +14,7 @@ plot_all(EEG_file.EEGa4, EEG_file.EEG_Fs,'EEG', 'Voltage (μV)', EEG_filter_IIR.
 
 % VGRF Signal
 
-VGRF_file = load('Assignment 4 Biomedical Signals.mat');
+VGRF_file = load('VGRFdata_assignment4.mat');
 VGRF_filter_FIR = load('testFilter.mat');
 VGRF_filter_IIR = load('testFilter.mat');
 
