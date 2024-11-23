@@ -16,10 +16,17 @@ plot_all(EEG_file.EEGa4, EEG_file.EEG_Fs,'EEG', 'Voltage (μV)', EEG_filter_IIR.
 
 VGRF_file = load('VGRFdata_assignment4.mat');
 VGRF_filter_FIR = load('testFilter.mat');
-VGRF_filter_IIR = load('testFilter.mat');
+VGRF_filter_IIR = load('IIR_bandpass.mat');
 
+
+
+%FIR Bandpass
 plot_all(VGRF_file.VGRF, VGRF_file.VGRF_Fs,'VGRF', 'Force (N)', VGRF_filter_FIR.testFilter, 'FIR Bandpass Filter');
-plot_all(VGRF_file.VGRF, VGRF_file.VGRF_Fs,'VGRF', 'Force (N)', VGRF_filter_IIR.testFilter, 'IIR Bandpass Filter');
+
+%IIR Bandpass
+plot_all(VGRF_file.VGRF, VGRF_file.VGRF_Fs,'VGRF', 'Force (N)', VGRF_filter_IIR.F, 'IIR Bandpass Filter');
+
+
 
 % BFVdu Signal
 
