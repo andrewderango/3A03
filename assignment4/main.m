@@ -17,10 +17,10 @@ EEG_filter_FIR.EGG_FIR, 'FIR Bandstop Filter', 1);
 
 VGRF_file = load('VGRFdata_assignment4.mat');
 VGRF_filter_FIR = load('testFilter.mat');
-VGRF_filter_IIR = load('IIR_bandpass.mat');
+VGRF_filter_IIR = load('VGRF_IIR.mat');
 
 plot_all(VGRF_file.VGRF, VGRF_file.VGRF_Fs,'VGRF', 'Force (N)', ...
-VGRF_filter_IIR.F, 'IIR Bandpass Filter', ...
+VGRF_filter_IIR.VGRF_IIR, 'IIR Bandpass Filter', ...
 VGRF_filter_FIR.testFilter, 'FIR Bandpass Filter', 2);
 
 % BFVdu Signal
