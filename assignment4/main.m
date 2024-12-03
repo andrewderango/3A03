@@ -26,9 +26,9 @@ VGRF_filter_FIR.VGRF_FIR, 'FIR Bandpass Filter', 2);
 % BFVdu Signal
 
 BFVdu_file = load('BFVdata_assignment4.mat');
-BFVdu_filter_FIR = load('testFilter.mat');
-BFVdu_filter_IIR = load('testFilter.mat');
+BFVdu_filter_FIR = load('BFVdu_FIR.mat');
+BFVdu_filter_IIR = load('BFVdu_IIR.mat');
 
 plot_all(BFVdu_file.BFVdu, BFVdu_file.BFV_Fs,'BFVdu', 'Blood Flow Velocity (m/s)', ...
-BFVdu_filter_IIR.testFilter, 'IIR Bandpass Filter', ...
-BFVdu_filter_FIR.testFilter, 'FIR Bandpass Filter', 3);
+BFVdu_filter_IIR.BFVdu_IIR, 'IIR Bandpass Filter', ...
+BFVdu_filter_FIR.BFVdu_FIR, 'FIR Bandpass Filter', 3);
